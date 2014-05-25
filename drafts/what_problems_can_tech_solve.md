@@ -2,7 +2,7 @@ Title: What problems can tech solve?
 Date: 2014-05-01
 Category: blog
 Tags: about, meta
-Slug: 
+Slug: what-problems-can-tech-solve
 Author: Nick Jones
 Summary: Who benefits from technological advances?
 
