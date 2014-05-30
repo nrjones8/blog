@@ -6,6 +6,8 @@ Slug: visualizing-march-madness
 Author: Nick Jones
 Summary: Coming up with ways to visualize the trajectory of a basketball game
 
+(Note that this was originally posted in April on the 
+[Wiki page of my Github](https://github.com/nrjones8/game-visualizer/wiki/Game-Viz))
 
 It's easy to miss games in the NCAA tournament (or any competition for that matter) -- wouldn't it be nice to know what the game "was like?" Was it close or a blowout? Maybe the favorite won by ten points, but was it a tight game before that? The goal here is to 
 
