@@ -1,7 +1,7 @@
 Title: Visualizing March Madness
 Date: 2014-05-04
 Category: blog
-Tags: visualization, R, python, ggplot, visualization
+Tags: visualization, R, python, ggplot
 Slug: visualizing-march-madness
 Author: Nick Jones
 Summary: Coming up with ways to visualize the trajectory of a basketball game
