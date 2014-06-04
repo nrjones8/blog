@@ -6,7 +6,7 @@ AUTHOR = u'Nick Jones'
 SITENAME = u'Nick Jones'
 SITEURL = ''
 
-TIMEZONE = 'Europe/Paris'
+TIMEZONE = ''
 
 DEFAULT_LANG = u'en'
 
@@ -20,9 +20,12 @@ SOCIAL = (('twitter', 'http://twitter.com/nrjones8'),
           ('github', 'http://github.com/nrjones8'),)
 
 DEFAULT_PAGINATION = False
+DISPLAY_PAGES_ON_MENU = False
 
 STATIC_PATHS = ["images", ]
 
 
+
+THEME = 'themes/foundation-default-colours'
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
