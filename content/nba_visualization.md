@@ -1,5 +1,5 @@
 Title: Visualizing NBA Playoffs (Part 1)
-Date: 2014-05-04
+Date: 2014-06-04
 Category: blog
 Tags: visualization, R, python, ggplot
 Slug: visualizing-nba-playoffs

@@ -21,7 +21,7 @@ SOCIAL = (('twitter', 'http://twitter.com/nrjones8'),
 
 DEFAULT_PAGINATION = False
 DISPLAY_PAGES_ON_MENU = False
-NEWEST_FIRST_ARCHIVES = False
+NEWEST_FIRST_ARCHIVES = True
 
 STATIC_PATHS = ["images", ]
 
