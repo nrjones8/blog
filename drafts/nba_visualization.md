@@ -40,26 +40,19 @@ the higher ranked team, i.e. `score of higher ranked team - score of lower ranke
 An example (with header included) of a few events from the Nets vs. Raptors series 
 is shown below:
 ```
-away away_rank away_score diff_score   game_id home home_rank home_score rank_diff round_num
-BKN         6          3         -3 TOR-BKN-1  TOR         3          0         3         1
-BKN         6          3         -3 TOR-BKN-1  TOR         3          0         3         1
-BKN         6          5         -5 TOR-BKN-1  TOR         3          0         3         1
-BKN         6          5         -5 TOR-BKN-1  TOR         3          0         3         1
-BKN         6          5         -5 TOR-BKN-1  TOR         3          0         3         1
-BKN         6          5         -5 TOR-BKN-1  TOR         3          0         3         1
-  series_id time
-TOR-BKN 0.00
-TOR-BKN 0.25
-TOR-BKN 0.50
-TOR-BKN 0.75
-TOR-BKN 1.00
-TOR-BKN 1.25
+away,away_rank,away_score,diff_score,game_id,home,home_rank,home_score,rank_diff,round_num,series_id,time
+BKN, 6, 3, -3, TOR-BKN-1, TOR, 3, 0, 3, 1, TOR-BKN, 0.0
+BKN, 6, 3, -3, TOR-BKN-1, TOR, 3, 0, 3, 1, TOR-BKN, 0.25
+BKN, 6, 5, -5, TOR-BKN-1, TOR, 3, 0, 3, 1, TOR-BKN, 0.5
+BKN, 6, 5, -5, TOR-BKN-1, TOR, 3, 0, 3, 1, TOR-BKN, 0.75
+BKN, 6, 5, -5, TOR-BKN-1, TOR, 3, 0, 3, 1, TOR-BKN, 1.0
+BKN, 6, 5, -5, TOR-BKN-1, TOR, 3, 0, 3, 1, TOR-BKN, 1.25
 ...
 ```
 
 # Analyzing the Data
 
-Note that the scraper's output gives uniform time intervals. In other words, 
+Note that the scraper's output gives uniform time intervals. In other words,  
 we define each event to happen every 15 seconds to allow us to compare games more easily. 
 
 As with the NCAA data, R (with [RStudio](https://www.rstudio.com/) and [ggplot2]
@@ -71,15 +64,20 @@ As with the NCAA data, R (with [RStudio](https://www.rstudio.com/) and [ggplot2]
 
 # Heatmap
 
-Which brings us to the heatmap, which is a great way to visualize many variables at once. The below heatmap ([larger version](https://raw.githubusercontent.com/nrjones8/game-visualizer/master/figures/heatmap_3_31.png)) does a much better job of capturing all the above aspects, though it requires a little more explanation. 
+Which brings us to the heatmap, which is a great way to visualize many variables at once.
+The below heatmap ([larger version](https://raw.githubusercontent.com/nrjones8/game-visualizer/master/figures/heatmap_3_31.png)) 
+does a much better job of capturing all the above aspects, though it requires a little more explanation. 
 
 <a href="https://raw.githubusercontent.com/nrjones8/game-visualizer/master/figures/heatmap_3_31.png">
   <img src="images/heatmap_3_31.png" style="width: 800px;"/>
 </a>
 
-* X-axis is still time
-* Each row corresponds to a game (with teams shown on the far left)
-* The color of each cell is based on the score differential of the given game at the given time -- blue means the favorite is winning by a lot, red means the underdog is winning by a lot, and closer to white means the game is close. (Note that any lead of over 15 is rounded down, since we'd like the colors to be distinguishable at lower differentials).
+* X-axis is time
+* Each row corresponds to a game (with the teams/game number shown on the far left)
+* The color of each cell is based on the score differential of the given game at the 
+given time -- blue means the favorite is winning by a lot, red means the underdog 
+is winning by a lot, and closer to white means the game is close. (Note that any lead of 
+over 15 is rounded down, since we'd like the colors to be distinguishable at lower differentials).
 * The rows are ordered! As shown on the right side of the map, rows are grouped by the rank differential of the game -- games between teams with a rank differential of 3 are plotted together etc. Thus, in the bottom rows we would expect to see lots of blue (since the higher ranked team is _much higher_ ranked). Any place we see red means an upset -- the lower the red is on the map, the more of an upset it was. 
 
 Thing to note:
