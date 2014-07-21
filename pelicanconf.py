@@ -27,6 +27,6 @@ STATIC_PATHS = ["images", ]
 
 
 
-THEME = 'themes/foundation-default-colours'
+THEME = 'themes/tuxlite_tbs'
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
