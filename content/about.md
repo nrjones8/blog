@@ -6,4 +6,5 @@ Slug: about
 Author: Nick Jones
 Summary: About me
 
-I'm Nick. Hi!
+Hello! This will be a place for short-to-medium length posts about things I've found interesting,
+helpful, or otherwise worth writing about. I hope you find something worthwhile!
