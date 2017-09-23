@@ -1,0 +1,1 @@
+aws s3 sync output/ s3://nrjones8.me/ --acl public-read
