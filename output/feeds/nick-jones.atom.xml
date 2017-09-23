@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Nick Jones - Nick Jones</title><link href="http://nrjones8.me/" rel="alternate"></link><link href="http://nrjones8.me/feeds/nick-jones.atom.xml" rel="self"></link><id>http://nrjones8.me/</id><updated>2017-09-23T00:00:00Z</updated><entry><title>About Me</title><link href="http://nrjones8.me/about.html" rel="alternate"></link><published>2017-09-23T00:00:00Z</published><updated>2017-09-23T00:00:00Z</updated><author><name>Nick Jones</name></author><id>tag:nrjones8.me,2017-09-23:/about.html</id><summary type="html">&lt;p&gt;About me&lt;/p&gt;</summary><content type="html">&lt;p&gt;Hello! I'm a software engineer working on improving government services at &lt;a href="https://navapbc.com"&gt;Nava&lt;/a&gt;,
+currently focused on &lt;a href="https://www.healthcare.gov"&gt;healthcare.gov&lt;/a&gt;. Before Nava, I spent a number of
+years at &lt;a href="https://www.thumbtack.com"&gt;Thumbtack&lt;/a&gt;, where I helped build the API used by Thumbtack's
+native mobile apps, and built tools to help service professionals find customers that were most
+relevant to them.&lt;/p&gt;
+&lt;p&gt;Some interests include (a certain kind of) tech, government, social services, the criminal justice
+system, using data to help inform decision-making, and data visualization.&lt;/p&gt;
+&lt;p&gt;You can find me &lt;a href="https://twitter.com/nrjones8"&gt;@nrjones8 on Twitter&lt;/a&gt; and &lt;a href="https://github.com/nrjones8"&gt;Github&lt;/a&gt;.
+If you want to say hi, feel free to shoot me an email at nrjones8@gmail.com.&lt;/p&gt;
+&lt;p&gt;Since you're all dying to know about the name of this website, I've always used "nrjones8" - I
+practically worshipped &lt;a href="https://en.wikipedia.org/wiki/Steven_Gerrard"&gt;Steven Gerrard&lt;/a&gt; for many
+years, which is where the "8" came from!&lt;/p&gt;</content><category term="about"></category><category term="meta"></category></entry><entry><title>Visualizing March Madness</title><link href="http://nrjones8.me/visualizing-march-madness.html" rel="alternate"></link><published>2014-05-04T00:00:00Z</published><updated>2014-05-04T00:00:00Z</updated><author><name>Nick Jones</name></author><id>tag:nrjones8.me,2014-05-04:/visualizing-march-madness.html</id><summary type="html">&lt;p&gt;Coming up with ways to visualize the trajectory of a basketball game&lt;/p&gt;</summary><content type="html">&lt;p&gt;(Note that this was originally posted in April on the 
+&lt;a href="https://github.com/nrjones8/game-visualizer/wiki/Game-Viz"&gt;Wiki page of my Github&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;It's easy to miss games in the NCAA tournament (or any competition for that matter) -- wouldn't it be nice to know what the game "was like?" Was it close or a blowout? Maybe the favorite won by ten points, but was it a tight game before that? The goal here is to &lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Visualize the trajectory of a game&lt;/li&gt;
+&lt;li&gt;Compare the trajectories of one game to another&lt;/li&gt;
+&lt;li&gt;Cluster games?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;Scraping Play by Play Data&lt;/h1&gt;
+&lt;p&gt;In order to see plot a game, we need to create a time series of the game -- for any given time in the game, what was the score? ESPN provides play-by-play data for every game (for example, http://scores.espn.go.com/ncb/playbyplay?gameId=400546936) which we can use to parse out the score at any given time. Using Python's &lt;code&gt;requests&lt;/code&gt; and &lt;code&gt;BeautifulSoup&lt;/code&gt; libraries make this a whole lot easier. Check out &lt;a href="https://gist.github.com/nrjones8/9821474"&gt;this gist&lt;/a&gt; to see the full scraper's code (or view it in my &lt;a href="https://github.com/nrjones8/game-visualizer/blob/master/scraper.py"&gt;repo&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;The scraper outputs a .csv file containing events from all the NCAA tournament games played so far. Each event stores the teams involved, metadata about the teams (their rank), the round number, the time, and scores. Note that we'll be interested in looking at the &lt;em&gt;difference&lt;/em&gt; in scores at a given time; since we expect a higher ranked team to be winning, the &lt;code&gt;diff_score&lt;/code&gt; variable used throughout is with respect to the higher ranked team, i.e. &lt;code&gt;score of higher ranked team - score of lower ranked team.&lt;/code&gt; An example (with header included) of a few events from the Dayton vs. Ohio State game is shown below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;away,away_rank,away_score,diff_score,game_id,home,home_rank,home_score,rank_diff,round_num,time
+DAY,11,0,2,DAY-OSU,OSU,6,2,5,2,0.0
+DAY,11,0,2,DAY-OSU,OSU,6,2,5,2,0.25
+DAY,11,0,2,DAY-OSU,OSU,6,2,5,2,0.5
+DAY,11,0,5,DAY-OSU,OSU,6,5,5,2,0.75
+...
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Analyzing the Data&lt;/h1&gt;
+&lt;p&gt;There are a ton of questions you could ask about these data -- do some games follow a similar trajectory? Which games are these? What games seemed most exciting? Before quantifying these questions, it'd be nice to have a way to visualize the games compared to one another. Note that the scraper's output gives uniform time intervals. In other words, we define each event to happen every 15 seconds to allow us to compare games more easily. &lt;/p&gt;
+&lt;p&gt;As a side note, I really, really wanted to find a Javascript library that made nice interactive plots of these data without much overhead. I know only a little basic JS, and tried messing with a couple of D3 extensions (namely &lt;a href="http://nvd3.org/"&gt;NVD3&lt;/a&gt; and &lt;a href="http://code.shutterstock.com/rickshaw/"&gt;Rickshaw&lt;/a&gt;), but found them difficult to customize. With more time (and patience!), I'd love to port these kinds of visualizations over to a more interactive platform.&lt;/p&gt;
+&lt;p&gt;As a dedicated user of R and &lt;a href="http://ggplot2.org/"&gt;ggplot2&lt;/a&gt;, it made more sense to jump into &lt;a href="https://www.rstudio.com/"&gt;RStudio&lt;/a&gt; and start playing with the data. &lt;/p&gt;
+&lt;h2&gt;Time Line&lt;/h2&gt;
+&lt;p&gt;My original thought was simply to plot each game as a line and overlay all the games at once, i.e. put time on the x-axis and score differential on the y-axis (here's where the interactivity of Javascript would be perfect -- simply highlight a specific game and see more details about it, or zoom in on certain time periods). &lt;/p&gt;
+&lt;p&gt;&lt;img src="images/timeline_rounds_2_3.png" style="width: 800px;"/&gt;&lt;/p&gt;
+&lt;p&gt;The colors shown on the plot map to the difference in rank between the two teams. Ideally, we could map the color (or some other aesthetic) to an individual game, making it easy to see which line on the plot corresponds to which game. However, once we start looking at more than roughly 6 games, it's difficult to see the difference between colors. So we'd like to incorporate:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Individual games -- what teams are involved? The above plot doesn't show this well. &lt;/li&gt;
+&lt;li&gt;"Fairness" of game -- how different are teams' ranks?&lt;/li&gt;
+&lt;li&gt;Trajectory of game -- was it close, a blowout, or had sections of each?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Heatmap&lt;/h1&gt;
+&lt;p&gt;Which brings us to the heatmap, which is a great way to visualize many variables at once. The below heatmap (&lt;a href="https://raw.githubusercontent.com/nrjones8/game-visualizer/master/figures/heatmap_3_31.png"&gt;larger version&lt;/a&gt;) does a much better job of capturing all the above aspects, though it requires a little more explanation. &lt;/p&gt;
+&lt;p&gt;&lt;a href="https://raw.githubusercontent.com/nrjones8/game-visualizer/master/figures/heatmap_3_31.png"&gt;
+  &lt;img src="images/heatmap_3_31.png" style="width: 800px;"/&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;X-axis is still time&lt;/li&gt;
+&lt;li&gt;Each row corresponds to a game (with teams shown on the far left)&lt;/li&gt;
+&lt;li&gt;The color of each cell is based on the score differential of the given game at the given time -- blue means the favorite is winning by a lot, red means the underdog is winning by a lot, and closer to white means the game is close. (Note that any lead of over 15 is rounded down, since we'd like the colors to be distinguishable at lower differentials).&lt;/li&gt;
+&lt;li&gt;The rows are ordered! As shown on the right side of the map, rows are grouped by the rank differential of the game -- games between teams with a rank differential of 3 are plotted together etc. Thus, in the bottom rows we would expect to see lots of blue (since the higher ranked team is &lt;em&gt;much higher&lt;/em&gt; ranked). Any place we see red means an upset -- the lower the red is on the map, the more of an upset it was. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For example, the Duke vs. Mercer game was an upset, since Duke was 11 seeds higher than Mercer. By looking at the MER-DUKE row, we can see that it was a good game -- each team had the lead for some time, but it switched often (as shown by the shift back and forth from red and blue). Similarly, Virginia had a tough time with Coastal Carolina for a while, as shown by the red cells in the first 2/3 of the CCAR-UVA game. On the other hand, Pitt-Colorado game wasn't particularly interesting -- Pitt was winning big the whole game, as shown by the constant red in their row. &lt;/p&gt;
+&lt;p&gt;The code for making the above plots isn't too tough -- here's the heatmap:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  &lt;span class="kp"&gt;head&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="p"&gt;)&lt;/span&gt;
+
+  away away_rank away_score diff_score game_id home home_rank home_score rank_diff round_num time
+&lt;span class="m"&gt;1&lt;/span&gt;  DAY        &lt;span class="m"&gt;11&lt;/span&gt;          &lt;span class="m"&gt;0&lt;/span&gt;          &lt;span class="m"&gt;2&lt;/span&gt; DAY&lt;span class="o"&gt;-&lt;/span&gt;OSU  OSU         &lt;span class="m"&gt;6&lt;/span&gt;          &lt;span class="m"&gt;2&lt;/span&gt;         &lt;span class="m"&gt;5&lt;/span&gt;         &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="m"&gt;0.00&lt;/span&gt;
+&lt;span class="m"&gt;2&lt;/span&gt;  DAY        &lt;span class="m"&gt;11&lt;/span&gt;          &lt;span class="m"&gt;0&lt;/span&gt;          &lt;span class="m"&gt;2&lt;/span&gt; DAY&lt;span class="o"&gt;-&lt;/span&gt;OSU  OSU         &lt;span class="m"&gt;6&lt;/span&gt;          &lt;span class="m"&gt;2&lt;/span&gt;         &lt;span class="m"&gt;5&lt;/span&gt;         &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="m"&gt;0.25&lt;/span&gt;
+&lt;span class="m"&gt;3&lt;/span&gt;  DAY        &lt;span class="m"&gt;11&lt;/span&gt;          &lt;span class="m"&gt;0&lt;/span&gt;          &lt;span class="m"&gt;2&lt;/span&gt; DAY&lt;span class="o"&gt;-&lt;/span&gt;OSU  OSU         &lt;span class="m"&gt;6&lt;/span&gt;          &lt;span class="m"&gt;2&lt;/span&gt;         &lt;span class="m"&gt;5&lt;/span&gt;         &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="m"&gt;0.50&lt;/span&gt;
+&lt;span class="m"&gt;4&lt;/span&gt;  DAY        &lt;span class="m"&gt;11&lt;/span&gt;          &lt;span class="m"&gt;0&lt;/span&gt;          &lt;span class="m"&gt;5&lt;/span&gt; DAY&lt;span class="o"&gt;-&lt;/span&gt;OSU  OSU         &lt;span class="m"&gt;6&lt;/span&gt;          &lt;span class="m"&gt;5&lt;/span&gt;         &lt;span class="m"&gt;5&lt;/span&gt;         &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="m"&gt;0.75&lt;/span&gt;
+&lt;span class="m"&gt;5&lt;/span&gt;  DAY        &lt;span class="m"&gt;11&lt;/span&gt;          &lt;span class="m"&gt;0&lt;/span&gt;          &lt;span class="m"&gt;5&lt;/span&gt; DAY&lt;span class="o"&gt;-&lt;/span&gt;OSU  OSU         &lt;span class="m"&gt;6&lt;/span&gt;          &lt;span class="m"&gt;5&lt;/span&gt;         &lt;span class="m"&gt;5&lt;/span&gt;         &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="m"&gt;1.00&lt;/span&gt;
+&lt;span class="m"&gt;6&lt;/span&gt;  DAY        &lt;span class="m"&gt;11&lt;/span&gt;          &lt;span class="m"&gt;3&lt;/span&gt;          &lt;span class="m"&gt;2&lt;/span&gt; DAY&lt;span class="o"&gt;-&lt;/span&gt;OSU  OSU         &lt;span class="m"&gt;6&lt;/span&gt;          &lt;span class="m"&gt;5&lt;/span&gt;         &lt;span class="m"&gt;5&lt;/span&gt;         &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="m"&gt;1.25&lt;/span&gt;
+ &lt;span class="c1"&gt;# Column for rounded scores -- anything over &amp;lt;max_score&amp;gt; will be the same color&lt;/span&gt;
+df&lt;span class="o"&gt;$&lt;/span&gt;rounded_diff_score &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="kp"&gt;sapply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;diff_score&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kr"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;score&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kp"&gt;ifelse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;score &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kp"&gt;min&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;score&lt;span class="p"&gt;,&lt;/span&gt; max_score&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="kp"&gt;max&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;score&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;max_score&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Thanks to tutorial here: http://learnr.wordpress.com/2010/01/26/ggplot2-quick-heatmap-plotting/&lt;/span&gt;
+&lt;span class="c1"&gt;# Also good: http://quantcorner.wordpress.com/2013/11/02/creating-a-heatmap-to-visualize-returns-with-r-ggplot2/&lt;/span&gt;
+
+heat &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; ggplot&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="p"&gt;,&lt;/span&gt; aes&lt;span class="p"&gt;(&lt;/span&gt;time&lt;span class="p"&gt;,&lt;/span&gt; game_id&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  geom_tile&lt;span class="p"&gt;(&lt;/span&gt;aes&lt;span class="p"&gt;(&lt;/span&gt;fill &lt;span class="o"&gt;=&lt;/span&gt; rounded_diff_score&lt;span class="p"&gt;),&lt;/span&gt; color &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;white&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  scale_fill_gradient2&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Score Differential&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; low &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;red&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; high &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;blue&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  facet_grid&lt;span class="p"&gt;(&lt;/span&gt;rank_diff &lt;span class="o"&gt;~&lt;/span&gt; &lt;span class="m"&gt;.&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; scales &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;free&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; space &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;free&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; labeller&lt;span class="o"&gt;=&lt;/span&gt;rank_diff_label&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  theme_bw&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  &lt;span class="c1"&gt;# Horizontal text on the facet&lt;/span&gt;
+  theme&lt;span class="p"&gt;(&lt;/span&gt;strip.text.y &lt;span class="o"&gt;=&lt;/span&gt; element_text&lt;span class="p"&gt;(&lt;/span&gt;size &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;9&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; angle &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  scale_x_continuous&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Time&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  scale_y_discrete&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Teams&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  ggtitle&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;NCAA 2014: Rounds 2 and 3&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="kp"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;heat&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;All the plotting code is available &lt;a href="https://github.com/nrjones8/game-visualizer/blob/master/visualize.R"&gt;here&lt;/a&gt; if you're curious! Feel free to follow me on Twitter @nrjones8 for more posts in the future. &lt;/p&gt;</content><category term="visualization"></category><category term="R"></category><category term="python"></category><category term="ggplot"></category></entry></feed>
