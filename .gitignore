@@ -1,0 +1,5 @@
+# Terraform stuff
+terraform/**/.terraform/
+*.terraform.tfstate*
+
+*.pyc

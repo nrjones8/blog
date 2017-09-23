@@ -15,9 +15,8 @@ FEED_ALL_ATOM = None
 CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 
-# Social widget
-SOCIAL = (('twitter', 'http://twitter.com/nrjones8'),
-          ('github', 'http://github.com/nrjones8'),)
+# The social sidebars are kinda noisy, just remove them
+SOCIAL = None
 
 DEFAULT_PAGINATION = False
 DISPLAY_PAGES_ON_MENU = False
