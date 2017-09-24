@@ -1,16 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Nick Jones - Nick Jones</title><link href="http://nrjones8.me/" rel="alternate"></link><link href="http://nrjones8.me/feeds/nick-jones.atom.xml" rel="self"></link><id>http://nrjones8.me/</id><updated>2017-09-23T00:00:00Z</updated><entry><title>About Me</title><link href="http://nrjones8.me/about.html" rel="alternate"></link><published>2017-09-23T00:00:00Z</published><updated>2017-09-23T00:00:00Z</updated><author><name>Nick Jones</name></author><id>tag:nrjones8.me,2017-09-23:/about.html</id><summary type="html">&lt;p&gt;About me&lt;/p&gt;</summary><content type="html">&lt;p&gt;Hello! I'm a software engineer working on improving government services at &lt;a href="https://navapbc.com"&gt;Nava&lt;/a&gt;,
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Nick Jones - Nick Jones</title><link href="http://nrjones8.me/" rel="alternate"></link><link href="http://nrjones8.me/feeds/nick-jones.atom.xml" rel="self"></link><id>http://nrjones8.me/</id><updated>2017-09-24T00:00:00Z</updated><entry><title>Exploring Police Employee Data</title><link href="http://nrjones8.me/18f-fbi-police-employee-data.html" rel="alternate"></link><published>2017-09-24T00:00:00Z</published><updated>2017-09-24T00:00:00Z</updated><author><name>Nick Jones</name></author><id>tag:nrjones8.me,2017-09-24:/18f-fbi-police-employee-data.html</id><summary type="html">&lt;p&gt;Using data provided by the FBI and 18F to see how police forces have grown&lt;/p&gt;</summary><content type="html">&lt;h2&gt;Intro to data&lt;/h2&gt;
+&lt;p&gt;18F and the FBI recently released a new website, the &lt;a href="https://crime-data-explorer.fr.cloud.gov/"&gt;Crime Data Explorer&lt;/a&gt;, that provides one central location
+for a number of FBI reports and data. In addition to exposing an API to use UCR (Uniform Crime Reporting)
+data, there are a number of datasets available for easy download. They also wrote a
+&lt;a href="https://18f.gsa.gov/2017/09/07/opening-the-nations-crime-data/"&gt;blog post&lt;/a&gt; announcing the new
+website.&lt;/p&gt;
+&lt;p&gt;I've been reading Michelle Alexander's &lt;a href="http://newjimcrow.com/"&gt;The New Jim Crow&lt;/a&gt;, which explores
+the many injustices of the criminal justice system, with a focus on The War on Drugs. It's an incredibly
+eye-opening read, and quotes some crazy statistics about how the criminal justice system has evolved
+over time.&lt;/p&gt;
+&lt;p&gt;I used to spend hours playing with &lt;a href="https://www.r-project.org/about.html"&gt;R&lt;/a&gt;, and have missed doing
+that! So to take advantage of some of the new data made accessible by 18F, and to contextualize my
+reading of The New Jim Crow, I explored some of how police forces have changed over time. There's
+nothing particularly groundbreaking about any of the analysis / plots below, but shows the power of
+having important data like this accessible for people to analyze.&lt;/p&gt;
+&lt;h2&gt;Police Employee Data&lt;/h2&gt;
+&lt;p&gt;I chose to look at one of the simpler datasets; the Police Employee Data, available on the
+Crime Data Explorerer &lt;a href="https://crime-data-explorer.fr.cloud.gov/downloads-and-docs"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Note that "The Uniform Crime Reporting (UCR) Program defines law enforcement officers as individuals
+who ordinarily carry a firearm and a badge, have full arrest powers, and are paid from governmental
+funds set aside specifically for sworn law enforcement representatives."&lt;/p&gt;
+&lt;p&gt;So, let's see how various states' police forces have changed over time. The dataset remarkably goes
+back until 1970; Nixon first used the phrase "War on Drugs" &lt;a href="http://www.npr.org/templates/story/story.php?storyId=9252490"&gt;in June of 1971&lt;/a&gt;,
+and it should come as no surprise that this "war" led to increased numbers in officers. We can see
+that breakdown by state; I've used a heatmap below, since it allows us to see 3 dimensions easily
+(state, year, and number of officers per 1000 people). A simpler line plot could be used as well,
+but would be harder to read (since there would be a different line for each state).&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note that I left out DC from this graphic, since it's a bit of an outlier. Comparing it to states,
+which all have some combination of urban areas and non-urban areas, is a bit misleading. DC is
+completely urban, and therefore has a different makeup than states do. More on that later.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Officers per 1000" src="images/officer_rate_heatmap_state_year.png" title="Number of officers per 1000, by state and year"&gt;&lt;/p&gt;
+&lt;p&gt;As we would expect, the number of police officers (per 1000 people) has increased pretty significantly
+over time. A few things stuck out to me:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;New Jersey (NJ) has always been very policied. I'd assume this is because it's a small state, but
+is largely urban. Other larger states, such as California, may have similar rates of policing in their
+urban areas, but the state-wide rate is diluted by having a large rural population as well. We'll
+come back to this later.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;What happened to Oregon in 2011? This just looks like bad data; Oregon in 2010 had 7031 officers,
+then 23,006 in 2011, then back down to 6942 in 2012. It seems unlikely that they cut ~16,000 officers
+over one year.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;What happened to Georgia in the 90s? There's specifically a big increase from 1993 to 1994; I did
+a little bit of googling around, but couldn't find any significant legislation that might explain
+those increases. The 1996 Olympics were in Atlanta, and the bid was won in 1990 (according to
+&lt;a href="https://en.wikipedia.org/wiki/1996_Summer_Olympics"&gt;Wikipedia&lt;/a&gt;), but it seems like a bit of a
+stretch to claim that's the cause without any further evidence.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;What led to the initial jump from 1971 to 1972? And what happened in the 80s? 1982 to 1983 specifically?
+To identify specific years that change happened, it's useful to instead look at a plot of changes
+over police rates over time. That is, a plot showing the increase (or decrease) in number of police
+per 1000 peple from one year to the next. Let's take a look at that (include note about &lt;code&gt;lag&lt;/code&gt; et al?)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img alt="One year change in officers per 1000" src="images/officer_rate_deltas_heatmap_state_year.png" title="Change in Officer Rate"&gt;&lt;/p&gt;
+&lt;p&gt;The heatmap of deltas makes this a bit more clear. There was an increase across the board from 1971
+to 1972, as well as from 1982 to 1983. These increases line up well with landmarks in the War on Drugs:&lt;/p&gt;
+&lt;h4&gt;"Public enemey number one" - Nixon, 1971&lt;/h4&gt;
+&lt;p&gt;President Richard Nixon gave a speech on June 17, 1971, declaring that drug abuse was "public enemey
+number one." The full text of this speech can be found &lt;a href="http://www.presidency.ucsb.edu/ws/?pid=3047"&gt;here&lt;/a&gt;.
+As shown above, there was an increase across all states in the following year (comparing 1972 to 1971).&lt;/p&gt;
+&lt;h4&gt;"Federal Initiatives Against Drug Trafficking" - Reagan, 1982&lt;/h4&gt;
+&lt;p&gt;President Reagan announced a number of initiatives on October 14, 1982 in a speech at the Justice
+Department. See the &lt;a href="http://www.presidency.ucsb.edu/ws/?pid=43127"&gt;full speech&lt;/a&gt;, and some more
+&lt;a href="http://www.politico.com/story/2010/10/reagan-declares-war-on-drugs-october-14-1982-043552"&gt;context on that speech&lt;/a&gt;. This speech makes eight explicit points, including:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;"First, in view of the success of the South Florida Task Force, and because of increasing organized crime involvement in drug abuse, we will establish 12 additional task forces in key areas in the United States."&lt;/p&gt;
+&lt;p&gt;"And eighth, millions of dollars will be allocated for prison and jail facilities so that the mistake of releasing dangerous criminals because of overcrowded prisons will not be repeated."&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Since this speech was given towards the end of 1982, we see the increase across all states in the
+following year (comparing 1983 to 1982).&lt;/p&gt;
+&lt;h2&gt;More urban states have more police&lt;/h2&gt;
+&lt;p&gt;I mentioned New Jersey having a lot of police, and excluding DC above because it's completely urban (whereas the states have parts that are urban, parts that are not). So let's see if there is indeed a relationship between
+how urban a state is, and how policed it is.&lt;/p&gt;
+&lt;p&gt;The Census website has data about "how urban" states are - this can be defined in a few ways, but the one
+we're interested in is "Percentage of the total population of the state represented by the urban population
+." I used data from 2010, which
+can be found &lt;a href="https://www.census.gov/geo/reference/ua/ualists_layout.html"&gt;here&lt;/a&gt;, under "2010 Percent
+Urban and Rural by State", the PctUrbanRural_State.txt data specifically.&lt;/p&gt;
+&lt;p&gt;Taking a quick look at this data combined with our original dataset of number of officers per 1000 people, there
+does seem to be a relationship - the more urban a state is, the greater number of police officers. The plot below
+could use some work (the state labels are messy, and I wrestled with &lt;a href="http://ggplot2.tidyverse.org/reference/geom_jitter.html"&gt;geom_jitter&lt;/a&gt; for a bit before giving up), but shows the general trend.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="% of population police vs. how urban" src="images/urban_pop_vs_officer_rate.png" title="% of population police vs. how urban"&gt;&lt;/p&gt;
+&lt;p&gt;There are certainly many other factors at play here, but even a simple linear model shows that how urban a state is can significantly predict how policed it is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;lm(formula = officer_rate_per_1000 ~ POPPCT_URBAN, data = year_2010)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-0.8473 -0.3186 -0.1075  0.2407  1.7220
+
+Coefficients:
+             Estimate Std. Error t value Pr(&amp;gt;|t|)
+(Intercept)  1.478276   0.373703   3.956 0.000251 ***
+POPPCT_URBAN 0.011053   0.004984   2.218 0.031337 *
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;This post only looks at a tiny portion of the data available through the UCR and the Crime Data
+Explorer. I'm hoping to spend more time looking at some of the richer datasets as well; it's great
+to see a push for making these kinds of datasets more easily accessible. Thanks for reading!&lt;/p&gt;</content><category term="visualization"></category><category term="R"></category><category term="ggplot"></category></entry><entry><title>About Me</title><link href="http://nrjones8.me/about.html" rel="alternate"></link><published>2017-09-23T00:00:00Z</published><updated>2017-09-23T00:00:00Z</updated><author><name>Nick Jones</name></author><id>tag:nrjones8.me,2017-09-23:/about.html</id><summary type="html">&lt;p&gt;Information about this blog&lt;/p&gt;</summary><content type="html">&lt;p&gt;Hello! I'm a software engineer working on improving government services at &lt;a href="https://navapbc.com"&gt;Nava&lt;/a&gt;,
 currently focused on &lt;a href="https://www.healthcare.gov"&gt;healthcare.gov&lt;/a&gt;. Before Nava, I spent a number of
 years at &lt;a href="https://www.thumbtack.com"&gt;Thumbtack&lt;/a&gt;, where I helped build the API used by Thumbtack's
 native mobile apps, and built tools to help service professionals find customers that were most
 relevant to them.&lt;/p&gt;
-&lt;p&gt;Some interests include (a certain kind of) tech, government, social services, the criminal justice
+&lt;p&gt;My interests include (a certain kind of) tech, government, social services, the criminal justice
 system, using data to help inform decision-making, and data visualization.&lt;/p&gt;
 &lt;p&gt;You can find me &lt;a href="https://twitter.com/nrjones8"&gt;@nrjones8 on Twitter&lt;/a&gt; and &lt;a href="https://github.com/nrjones8"&gt;Github&lt;/a&gt;.
 If you want to say hi, feel free to shoot me an email at nrjones8@gmail.com.&lt;/p&gt;
 &lt;p&gt;Since you're all dying to know about the name of this website, I've always used "nrjones8" - I
 practically worshipped &lt;a href="https://en.wikipedia.org/wiki/Steven_Gerrard"&gt;Steven Gerrard&lt;/a&gt; for many
-years, which is where the "8" came from!&lt;/p&gt;</content><category term="about"></category><category term="meta"></category></entry><entry><title>Visualizing March Madness</title><link href="http://nrjones8.me/visualizing-march-madness.html" rel="alternate"></link><published>2014-05-04T00:00:00Z</published><updated>2014-05-04T00:00:00Z</updated><author><name>Nick Jones</name></author><id>tag:nrjones8.me,2014-05-04:/visualizing-march-madness.html</id><summary type="html">&lt;p&gt;Coming up with ways to visualize the trajectory of a basketball game&lt;/p&gt;</summary><content type="html">&lt;p&gt;(Note that this was originally posted in April on the 
+years, which is where the "8" came from.&lt;/p&gt;</content><category term="about"></category><category term="meta"></category></entry><entry><title>Visualizing March Madness</title><link href="http://nrjones8.me/visualizing-march-madness.html" rel="alternate"></link><published>2014-05-04T00:00:00Z</published><updated>2014-05-04T00:00:00Z</updated><author><name>Nick Jones</name></author><id>tag:nrjones8.me,2014-05-04:/visualizing-march-madness.html</id><summary type="html">&lt;p&gt;Coming up with ways to visualize the trajectory of a basketball game&lt;/p&gt;</summary><content type="html">&lt;p&gt;(Note that this was originally posted in April on the 
 &lt;a href="https://github.com/nrjones8/game-visualizer/wiki/Game-Viz"&gt;Wiki page of my Github&lt;/a&gt;)&lt;/p&gt;
 &lt;p&gt;It's easy to miss games in the NCAA tournament (or any competition for that matter) -- wouldn't it be nice to know what the game "was like?" Was it close or a blowout? Maybe the favorite won by ten points, but was it a tight game before that? The goal here is to &lt;/p&gt;
 &lt;ol&gt;

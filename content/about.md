@@ -4,7 +4,7 @@ Category: about
 Tags: about, meta
 Slug: about
 Author: Nick Jones
-Summary: About me
+Summary: Information about this blog
 
 Hello! I'm a software engineer working on improving government services at [Nava](https://navapbc.com),
 currently focused on [healthcare.gov](https://www.healthcare.gov). Before Nava, I spent a number of

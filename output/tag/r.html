@@ -56,8 +56,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="http://nrjones8.me/visualizing-march-madness.html"><h1>Visualizing March Madness</h1></a>
-Sun 04 May 2014
+            <a href="http://nrjones8.me/18f-fbi-police-employee-data.html"><h1>Exploring Police Employee Data</h1></a>
+Sun 24 September 2017
 
 by <a class="url fn" href="http://nrjones8.me/author/nick-jones.html">Nick Jones</a>
  
@@ -66,88 +66,133 @@ by <a class="url fn" href="http://nrjones8.me/author/nick-jones.html">Nick Jones
  
         </div>
         
-        <div><p>(Note that this was originally posted in April on the 
-<a href="https://github.com/nrjones8/game-visualizer/wiki/Game-Viz">Wiki page of my Github</a>)</p>
-<p>It's easy to miss games in the NCAA tournament (or any competition for that matter) -- wouldn't it be nice to know what the game "was like?" Was it close or a blowout? Maybe the favorite won by ten points, but was it a tight game before that? The goal here is to </p>
+        <div><h2>Intro to data</h2>
+<p>18F and the FBI recently released a new website, the <a href="https://crime-data-explorer.fr.cloud.gov/">Crime Data Explorer</a>, that provides one central location
+for a number of FBI reports and data. In addition to exposing an API to use UCR (Uniform Crime Reporting)
+data, there are a number of datasets available for easy download. They also wrote a
+<a href="https://18f.gsa.gov/2017/09/07/opening-the-nations-crime-data/">blog post</a> announcing the new
+website.</p>
+<p>I've been reading Michelle Alexander's <a href="http://newjimcrow.com/">The New Jim Crow</a>, which explores
+the many injustices of the criminal justice system, with a focus on The War on Drugs. It's an incredibly
+eye-opening read, and quotes some crazy statistics about how the criminal justice system has evolved
+over time.</p>
+<p>I used to spend hours playing with <a href="https://www.r-project.org/about.html">R</a>, and have missed doing
+that! So to take advantage of some of the new data made accessible by 18F, and to contextualize my
+reading of The New Jim Crow, I explored some of how police forces have changed over time. There's
+nothing particularly groundbreaking about any of the analysis / plots below, but shows the power of
+having important data like this accessible for people to analyze.</p>
+<h2>Police Employee Data</h2>
+<p>I chose to look at one of the simpler datasets; the Police Employee Data, available on the
+Crime Data Explorerer <a href="https://crime-data-explorer.fr.cloud.gov/downloads-and-docs">here</a>.</p>
+<p>Note that "The Uniform Crime Reporting (UCR) Program defines law enforcement officers as individuals
+who ordinarily carry a firearm and a badge, have full arrest powers, and are paid from governmental
+funds set aside specifically for sworn law enforcement representatives."</p>
+<p>So, let's see how various states' police forces have changed over time. The dataset remarkably goes
+back until 1970; Nixon first used the phrase "War on Drugs" <a href="http://www.npr.org/templates/story/story.php?storyId=9252490">in June of 1971</a>,
+and it should come as no surprise that this "war" led to increased numbers in officers. We can see
+that breakdown by state; I've used a heatmap below, since it allows us to see 3 dimensions easily
+(state, year, and number of officers per 1000 people). A simpler line plot could be used as well,
+but would be harder to read (since there would be a different line for each state).</p>
+<p><em>Note that I left out DC from this graphic, since it's a bit of an outlier. Comparing it to states,
+which all have some combination of urban areas and non-urban areas, is a bit misleading. DC is
+completely urban, and therefore has a different makeup than states do. More on that later.</em></p>
+<p><img alt="Officers per 1000" src="images/officer_rate_heatmap_state_year.png" title="Number of officers per 1000, by state and year"></p>
+<p>As we would expect, the number of police officers (per 1000 people) has increased pretty significantly
+over time. A few things stuck out to me:</p>
 <ol>
-<li>Visualize the trajectory of a game</li>
-<li>Compare the trajectories of one game to another</li>
-<li>Cluster games?</li>
+<li>
+<p>New Jersey (NJ) has always been very policied. I'd assume this is because it's a small state, but
+is largely urban. Other larger states, such as California, may have similar rates of policing in their
+urban areas, but the state-wide rate is diluted by having a large rural population as well. We'll
+come back to this later.</p>
+</li>
+<li>
+<p>What happened to Oregon in 2011? This just looks like bad data; Oregon in 2010 had 7031 officers,
+then 23,006 in 2011, then back down to 6942 in 2012. It seems unlikely that they cut ~16,000 officers
+over one year.</p>
+</li>
+<li>
+<p>What happened to Georgia in the 90s? There's specifically a big increase from 1993 to 1994; I did
+a little bit of googling around, but couldn't find any significant legislation that might explain
+those increases. The 1996 Olympics were in Atlanta, and the bid was won in 1990 (according to
+<a href="https://en.wikipedia.org/wiki/1996_Summer_Olympics">Wikipedia</a>), but it seems like a bit of a
+stretch to claim that's the cause without any further evidence.</p>
+</li>
+<li>
+<p>What led to the initial jump from 1971 to 1972? And what happened in the 80s? 1982 to 1983 specifically?
+To identify specific years that change happened, it's useful to instead look at a plot of changes
+over police rates over time. That is, a plot showing the increase (or decrease) in number of police
+per 1000 peple from one year to the next. Let's take a look at that (include note about <code>lag</code> et al?)</p>
+</li>
 </ol>
-<h1>Scraping Play by Play Data</h1>
-<p>In order to see plot a game, we need to create a time series of the game -- for any given time in the game, what was the score? ESPN provides play-by-play data for every game (for example, http://scores.espn.go.com/ncb/playbyplay?gameId=400546936) which we can use to parse out the score at any given time. Using Python's <code>requests</code> and <code>BeautifulSoup</code> libraries make this a whole lot easier. Check out <a href="https://gist.github.com/nrjones8/9821474">this gist</a> to see the full scraper's code (or view it in my <a href="https://github.com/nrjones8/game-visualizer/blob/master/scraper.py">repo</a>).</p>
-<p>The scraper outputs a .csv file containing events from all the NCAA tournament games played so far. Each event stores the teams involved, metadata about the teams (their rank), the round number, the time, and scores. Note that we'll be interested in looking at the <em>difference</em> in scores at a given time; since we expect a higher ranked team to be winning, the <code>diff_score</code> variable used throughout is with respect to the higher ranked team, i.e. <code>score of higher ranked team - score of lower ranked team.</code> An example (with header included) of a few events from the Dayton vs. Ohio State game is shown below:</p>
-<div class="highlight"><pre><span></span>away,away_rank,away_score,diff_score,game_id,home,home_rank,home_score,rank_diff,round_num,time
-DAY,11,0,2,DAY-OSU,OSU,6,2,5,2,0.0
-DAY,11,0,2,DAY-OSU,OSU,6,2,5,2,0.25
-DAY,11,0,2,DAY-OSU,OSU,6,2,5,2,0.5
-DAY,11,0,5,DAY-OSU,OSU,6,5,5,2,0.75
-...
+<p><img alt="One year change in officers per 1000" src="images/officer_rate_deltas_heatmap_state_year.png" title="Change in Officer Rate"></p>
+<p>The heatmap of deltas makes this a bit more clear. There was an increase across the board from 1971
+to 1972, as well as from 1982 to 1983. These increases line up well with landmarks in the War on Drugs:</p>
+<h4>"Public enemey number one" - Nixon, 1971</h4>
+<p>President Richard Nixon gave a speech on June 17, 1971, declaring that drug abuse was "public enemey
+number one." The full text of this speech can be found <a href="http://www.presidency.ucsb.edu/ws/?pid=3047">here</a>.
+As shown above, there was an increase across all states in the following year (comparing 1972 to 1971).</p>
+<h4>"Federal Initiatives Against Drug Trafficking" - Reagan, 1982</h4>
+<p>President Reagan announced a number of initiatives on October 14, 1982 in a speech at the Justice
+Department. See the <a href="http://www.presidency.ucsb.edu/ws/?pid=43127">full speech</a>, and some more
+<a href="http://www.politico.com/story/2010/10/reagan-declares-war-on-drugs-october-14-1982-043552">context on that speech</a>. This speech makes eight explicit points, including:</p>
+<blockquote>
+<p>"First, in view of the success of the South Florida Task Force, and because of increasing organized crime involvement in drug abuse, we will establish 12 additional task forces in key areas in the United States."</p>
+<p>"And eighth, millions of dollars will be allocated for prison and jail facilities so that the mistake of releasing dangerous criminals because of overcrowded prisons will not be repeated."</p>
+</blockquote>
+<p>Since this speech was given towards the end of 1982, we see the increase across all states in the
+following year (comparing 1983 to 1982).</p>
+<h2>More urban states have more police</h2>
+<p>I mentioned New Jersey having a lot of police, and excluding DC above because it's completely urban (whereas the states have parts that are urban, parts that are not). So let's see if there is indeed a relationship between
+how urban a state is, and how policed it is.</p>
+<p>The Census website has data about "how urban" states are - this can be defined in a few ways, but the one
+we're interested in is "Percentage of the total population of the state represented by the urban population
+." I used data from 2010, which
+can be found <a href="https://www.census.gov/geo/reference/ua/ualists_layout.html">here</a>, under "2010 Percent
+Urban and Rural by State", the PctUrbanRural_State.txt data specifically.</p>
+<p>Taking a quick look at this data combined with our original dataset of number of officers per 1000 people, there
+does seem to be a relationship - the more urban a state is, the greater number of police officers. The plot below
+could use some work (the state labels are messy, and I wrestled with <a href="http://ggplot2.tidyverse.org/reference/geom_jitter.html">geom_jitter</a> for a bit before giving up), but shows the general trend.</p>
+<p><img alt="% of population police vs. how urban" src="images/urban_pop_vs_officer_rate.png" title="% of population police vs. how urban"></p>
+<p>There are certainly many other factors at play here, but even a simple linear model shows that how urban a state is can significantly predict how policed it is:</p>
+<div class="highlight"><pre><span></span>lm(formula = officer_rate_per_1000 ~ POPPCT_URBAN, data = year_2010)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-0.8473 -0.3186 -0.1075  0.2407  1.7220
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  1.478276   0.373703   3.956 0.000251 ***
+POPPCT_URBAN 0.011053   0.004984   2.218 0.031337 *
 </pre></div>
 
 
-<h1>Analyzing the Data</h1>
-<p>There are a ton of questions you could ask about these data -- do some games follow a similar trajectory? Which games are these? What games seemed most exciting? Before quantifying these questions, it'd be nice to have a way to visualize the games compared to one another. Note that the scraper's output gives uniform time intervals. In other words, we define each event to happen every 15 seconds to allow us to compare games more easily. </p>
-<p>As a side note, I really, really wanted to find a Javascript library that made nice interactive plots of these data without much overhead. I know only a little basic JS, and tried messing with a couple of D3 extensions (namely <a href="http://nvd3.org/">NVD3</a> and <a href="http://code.shutterstock.com/rickshaw/">Rickshaw</a>), but found them difficult to customize. With more time (and patience!), I'd love to port these kinds of visualizations over to a more interactive platform.</p>
-<p>As a dedicated user of R and <a href="http://ggplot2.org/">ggplot2</a>, it made more sense to jump into <a href="https://www.rstudio.com/">RStudio</a> and start playing with the data. </p>
-<h2>Time Line</h2>
-<p>My original thought was simply to plot each game as a line and overlay all the games at once, i.e. put time on the x-axis and score differential on the y-axis (here's where the interactivity of Javascript would be perfect -- simply highlight a specific game and see more details about it, or zoom in on certain time periods). </p>
-<p><img src="images/timeline_rounds_2_3.png" style="width: 800px;"/></p>
-<p>The colors shown on the plot map to the difference in rank between the two teams. Ideally, we could map the color (or some other aesthetic) to an individual game, making it easy to see which line on the plot corresponds to which game. However, once we start looking at more than roughly 6 games, it's difficult to see the difference between colors. So we'd like to incorporate:</p>
-<ul>
-<li>Individual games -- what teams are involved? The above plot doesn't show this well. </li>
-<li>"Fairness" of game -- how different are teams' ranks?</li>
-<li>Trajectory of game -- was it close, a blowout, or had sections of each?</li>
-</ul>
-<h1>Heatmap</h1>
-<p>Which brings us to the heatmap, which is a great way to visualize many variables at once. The below heatmap (<a href="https://raw.githubusercontent.com/nrjones8/game-visualizer/master/figures/heatmap_3_31.png">larger version</a>) does a much better job of capturing all the above aspects, though it requires a little more explanation. </p>
-<p><a href="https://raw.githubusercontent.com/nrjones8/game-visualizer/master/figures/heatmap_3_31.png">
-  <img src="images/heatmap_3_31.png" style="width: 800px;"/>
-</a></p>
-<ul>
-<li>X-axis is still time</li>
-<li>Each row corresponds to a game (with teams shown on the far left)</li>
-<li>The color of each cell is based on the score differential of the given game at the given time -- blue means the favorite is winning by a lot, red means the underdog is winning by a lot, and closer to white means the game is close. (Note that any lead of over 15 is rounded down, since we'd like the colors to be distinguishable at lower differentials).</li>
-<li>The rows are ordered! As shown on the right side of the map, rows are grouped by the rank differential of the game -- games between teams with a rank differential of 3 are plotted together etc. Thus, in the bottom rows we would expect to see lots of blue (since the higher ranked team is <em>much higher</em> ranked). Any place we see red means an upset -- the lower the red is on the map, the more of an upset it was. </li>
-</ul>
-<p>For example, the Duke vs. Mercer game was an upset, since Duke was 11 seeds higher than Mercer. By looking at the MER-DUKE row, we can see that it was a good game -- each team had the lead for some time, but it switched often (as shown by the shift back and forth from red and blue). Similarly, Virginia had a tough time with Coastal Carolina for a while, as shown by the red cells in the first 2/3 of the CCAR-UVA game. On the other hand, Pitt-Colorado game wasn't particularly interesting -- Pitt was winning big the whole game, as shown by the constant red in their row. </p>
-<p>The code for making the above plots isn't too tough -- here's the heatmap:</p>
-<div class="highlight"><pre><span></span>  <span class="kp">head</span><span class="p">(</span>df<span class="p">)</span>
-
-  away away_rank away_score diff_score game_id home home_rank home_score rank_diff round_num time
-<span class="m">1</span>  DAY        <span class="m">11</span>          <span class="m">0</span>          <span class="m">2</span> DAY<span class="o">-</span>OSU  OSU         <span class="m">6</span>          <span class="m">2</span>         <span class="m">5</span>         <span class="m">2</span> <span class="m">0.00</span>
-<span class="m">2</span>  DAY        <span class="m">11</span>          <span class="m">0</span>          <span class="m">2</span> DAY<span class="o">-</span>OSU  OSU         <span class="m">6</span>          <span class="m">2</span>         <span class="m">5</span>         <span class="m">2</span> <span class="m">0.25</span>
-<span class="m">3</span>  DAY        <span class="m">11</span>          <span class="m">0</span>          <span class="m">2</span> DAY<span class="o">-</span>OSU  OSU         <span class="m">6</span>          <span class="m">2</span>         <span class="m">5</span>         <span class="m">2</span> <span class="m">0.50</span>
-<span class="m">4</span>  DAY        <span class="m">11</span>          <span class="m">0</span>          <span class="m">5</span> DAY<span class="o">-</span>OSU  OSU         <span class="m">6</span>          <span class="m">5</span>         <span class="m">5</span>         <span class="m">2</span> <span class="m">0.75</span>
-<span class="m">5</span>  DAY        <span class="m">11</span>          <span class="m">0</span>          <span class="m">5</span> DAY<span class="o">-</span>OSU  OSU         <span class="m">6</span>          <span class="m">5</span>         <span class="m">5</span>         <span class="m">2</span> <span class="m">1.00</span>
-<span class="m">6</span>  DAY        <span class="m">11</span>          <span class="m">3</span>          <span class="m">2</span> DAY<span class="o">-</span>OSU  OSU         <span class="m">6</span>          <span class="m">5</span>         <span class="m">5</span>         <span class="m">2</span> <span class="m">1.25</span>
- <span class="c1"># Column for rounded scores -- anything over &lt;max_score&gt; will be the same color</span>
-df<span class="o">$</span>rounded_diff_score <span class="o">&lt;-</span> <span class="kp">sapply</span><span class="p">(</span>df<span class="o">$</span>diff_score<span class="p">,</span> <span class="kr">function</span><span class="p">(</span>score<span class="p">)</span> <span class="p">{</span>
-  <span class="kp">ifelse</span><span class="p">(</span>score <span class="o">&gt;</span> <span class="m">0</span><span class="p">,</span> <span class="kp">min</span><span class="p">(</span>score<span class="p">,</span> max_score<span class="p">),</span> <span class="kp">max</span><span class="p">(</span>score<span class="p">,</span> <span class="o">-</span>max_score<span class="p">))</span>
-<span class="p">})</span>
-
-<span class="c1"># Thanks to tutorial here: http://learnr.wordpress.com/2010/01/26/ggplot2-quick-heatmap-plotting/</span>
-<span class="c1"># Also good: http://quantcorner.wordpress.com/2013/11/02/creating-a-heatmap-to-visualize-returns-with-r-ggplot2/</span>
-
-heat <span class="o">&lt;-</span> ggplot<span class="p">(</span>df<span class="p">,</span> aes<span class="p">(</span>time<span class="p">,</span> game_id<span class="p">))</span> <span class="o">+</span>
-  geom_tile<span class="p">(</span>aes<span class="p">(</span>fill <span class="o">=</span> rounded_diff_score<span class="p">),</span> color <span class="o">=</span> <span class="s">&#39;white&#39;</span><span class="p">)</span> <span class="o">+</span>
-  scale_fill_gradient2<span class="p">(</span><span class="s">&quot;Score Differential&quot;</span><span class="p">,</span> low <span class="o">=</span> <span class="s">&#39;red&#39;</span><span class="p">,</span> high <span class="o">=</span> <span class="s">&#39;blue&#39;</span><span class="p">)</span> <span class="o">+</span>
-  facet_grid<span class="p">(</span>rank_diff <span class="o">~</span> <span class="m">.</span><span class="p">,</span> scales <span class="o">=</span> <span class="s">&#39;free&#39;</span><span class="p">,</span> space <span class="o">=</span> <span class="s">&#39;free&#39;</span><span class="p">,</span> labeller<span class="o">=</span>rank_diff_label<span class="p">)</span> <span class="o">+</span>
-  theme_bw<span class="p">()</span> <span class="o">+</span>
-  <span class="c1"># Horizontal text on the facet</span>
-  theme<span class="p">(</span>strip.text.y <span class="o">=</span> element_text<span class="p">(</span>size <span class="o">=</span> <span class="m">9</span><span class="p">,</span> angle <span class="o">=</span> <span class="m">0</span><span class="p">))</span> <span class="o">+</span>
-  scale_x_continuous<span class="p">(</span><span class="s">&#39;Time&#39;</span><span class="p">)</span> <span class="o">+</span>
-  scale_y_discrete<span class="p">(</span><span class="s">&#39;Teams&#39;</span><span class="p">)</span> <span class="o">+</span>
-  ggtitle<span class="p">(</span><span class="s">&#39;NCAA 2014: Rounds 2 and 3&#39;</span><span class="p">)</span>
-
-<span class="kp">print</span><span class="p">(</span>heat<span class="p">)</span>
-</pre></div>
-
-
-<p>All the plotting code is available <a href="https://github.com/nrjones8/game-visualizer/blob/master/visualize.R">here</a> if you're curious! Feel free to follow me on Twitter @nrjones8 for more posts in the future. </p></div>
+<h2>Conclusion</h2>
+<p>This post only looks at a tiny portion of the data available through the UCR and the Crime Data
+Explorer. I'm hoping to spend more time looking at some of the richer datasets as well; it's great
+to see a push for making these kinds of datasets more easily accessible. Thanks for reading!</p></div>
         <hr />
     </div>
 		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="http://nrjones8.me/visualizing-march-madness.html"><h2>Visualizing March Madness</h2></a>
+        <div class= "well small"> Sun 04 May 2014
+
+by <a class="url fn" href="http://nrjones8.me/author/nick-jones.html">Nick Jones</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Coming up with ways to visualize the trajectory of a basketball game</p> <a class="btn btn-info xsmall" href="http://nrjones8.me/visualizing-march-madness.html">read more</a></div>
+    </div>	
+				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
