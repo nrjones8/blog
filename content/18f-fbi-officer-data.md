@@ -19,8 +19,7 @@ the many injustices of the criminal justice system, with a focus on The War on D
 eye-opening read, and quotes some crazy statistics about how the criminal justice system has evolved
 over time.
 
-I used to spend hours playing with [R](https://www.r-project.org/about.html), and have missed doing
-that! So to take advantage of some of the new data made accessible by 18F, and to contextualize my
+To take advantage of some of the new data made accessible by 18F, and to contextualize my
 reading of The New Jim Crow, I explored some of how police forces have changed over time. There's
 nothing particularly groundbreaking about any of the analysis / plots below, but shows the power of
 having important data like this accessible for people to analyze.
@@ -40,9 +39,14 @@ that breakdown by state; I've used a heatmap below, since it allows us to see 3 
 (state, year, and number of officers per 1000 people). A simpler line plot could be used as well,
 but would be harder to read (since there would be a different line for each state).
 
-_Note that I left out DC from this graphic, since it's a bit of an outlier. Comparing it to states,
-which all have some combination of urban areas and non-urban areas, is a bit misleading. DC is
-completely urban, and therefore has a different makeup than states do. More on that later._
+### Quick note on the data
+I removed both DC and Oregon from the below graphic. Comparing DC to states, which all have some
+combination of urban areas and non-urban areas, is a bit misleading. DC is completely urban, and
+therefore has a different makeup than states do. More on that later.
+
+Oregon appeared to have incorrect data. Specifically, the data show that Oregon had 7031 (1.81 per
+1000 people) officers in 2010, 23,006 (5.85 per 1000 people) officers in 2011, and returned back
+to 6492 officers (1.75 per 1000 people) in 2012. The data from 2011 are likely just incorrect.
 
 ![Officers per 1000](images/officer_rate_heatmap_state_year.png "Number of officers per 1000, by state and year")
 
@@ -54,20 +58,16 @@ is largely urban. Other larger states, such as California, may have similar rate
 urban areas, but the state-wide rate is diluted by having a large rural population as well. We'll
 come back to this later.
 
-2. What happened to Oregon in 2011? This just looks like bad data; Oregon in 2010 had 7031 officers,
-then 23,006 in 2011, then back down to 6942 in 2012. It seems unlikely that they cut ~16,000 officers
-over one year.
-
-3. What happened to Georgia in the 90s? There's specifically a big increase from 1993 to 1994; I did
+2. What happened to Georgia in the 90s? There's specifically a big increase from 1993 to 1994; I did
 a little bit of googling around, but couldn't find any significant legislation that might explain
 those increases. The 1996 Olympics were in Atlanta, and the bid was won in 1990 (according to
 [Wikipedia](https://en.wikipedia.org/wiki/1996_Summer_Olympics)), but it seems like a bit of a
 stretch to claim that's the cause without any further evidence.
 
-4. What led to the initial jump from 1971 to 1972? And what happened in the 80s? 1982 to 1983 specifically?
+3. What led to the initial jump from 1971 to 1972? And what happened in the 80s? 1982 to 1983 specifically?
 To identify specific years that change happened, it's useful to instead look at a plot of changes
 over police rates over time. That is, a plot showing the increase (or decrease) in number of police
-per 1000 peple from one year to the next. Let's take a look at that (include note about `lag` et al?)
+per 1000 peple from one year to the next. Let's take a look at that.
 
 
 ![One year change in officers per 1000](images/officer_rate_deltas_heatmap_state_year.png "Change in Officer Rate")
@@ -104,11 +104,26 @@ Urban and Rural by State", the PctUrbanRural_State.txt data specifically.
 
 Taking a quick look at this data combined with our original dataset of number of officers per 1000 people, there
 does seem to be a relationship - the more urban a state is, the greater number of police officers. The plot below
-could use some work (the state labels are messy, and I wrestled with [geom_jitter](http://ggplot2.tidyverse.org/reference/geom_jitter.html) for a bit before giving up), but shows the general trend.
+could use some work (the state labels are messy), but shows the general trend.
 
 ![% of population police vs. how urban](images/urban_pop_vs_officer_rate.png "% of population police vs. how urban")
 
-There are certainly many other factors at play here, but even a simple linear model shows that how urban a state is can significantly predict how policed it is:
+There are certainly many other factors at play here, but even a simple linear model shows that how
+urban a state is can significantly predict how policed it is. See below for full details of that
+model.
+
+## Conclusion
+This post only looks at a tiny portion of the data available through the UCR and the Crime Data
+Explorer. I'm hoping to spend more time looking at some of the richer datasets as well; it's great
+to see a push for making these kinds of datasets more easily accessible. Thanks for reading!
+
+
+### Code / data
+All of the code used in this post is available [on Github](https://github.com/nrjones8/18f-crime-data) -
+it includes pulling in a few different datasets, calculating the year-over-year changes in officer
+rates, and creating plots.
+
+The model used to predict officer rates, based on how urban a state is:
 ```
 lm(formula = officer_rate_per_1000 ~ POPPCT_URBAN, data = year_2010)
 
@@ -121,9 +136,3 @@ Coefficients:
 (Intercept)  1.478276   0.373703   3.956 0.000251 ***
 POPPCT_URBAN 0.011053   0.004984   2.218 0.031337 *
 ```
-
-## Conclusion
-This post only looks at a tiny portion of the data available through the UCR and the Crime Data
-Explorer. I'm hoping to spend more time looking at some of the richer datasets as well; it's great
-to see a push for making these kinds of datasets more easily accessible. All of the code used in this
-post is available [on Github](https://github.com/nrjones8/18f-crime-data). Thanks for reading!

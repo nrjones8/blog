@@ -36,10 +36,10 @@
 
         <div class="nav-collapse">
         <ul class="nav">
-            
+
         </ul>
         </div>
-        
+
     </div>
     </div>
 </div>
@@ -70,8 +70,7 @@ website.</p>
 the many injustices of the criminal justice system, with a focus on The War on Drugs. It's an incredibly
 eye-opening read, and quotes some crazy statistics about how the criminal justice system has evolved
 over time.</p>
-<p>I used to spend hours playing with <a href="https://www.r-project.org/about.html">R</a>, and have missed doing
-that! So to take advantage of some of the new data made accessible by 18F, and to contextualize my
+<p>To take advantage of some of the new data made accessible by 18F, and to contextualize my
 reading of The New Jim Crow, I explored some of how police forces have changed over time. There's
 nothing particularly groundbreaking about any of the analysis / plots below, but shows the power of
 having important data like this accessible for people to analyze.</p>
@@ -87,9 +86,13 @@ and it should come as no surprise that this "war" led to increased numbers in of
 that breakdown by state; I've used a heatmap below, since it allows us to see 3 dimensions easily
 (state, year, and number of officers per 1000 people). A simpler line plot could be used as well,
 but would be harder to read (since there would be a different line for each state).</p>
-<p><em>Note that I left out DC from this graphic, since it's a bit of an outlier. Comparing it to states,
-which all have some combination of urban areas and non-urban areas, is a bit misleading. DC is
-completely urban, and therefore has a different makeup than states do. More on that later.</em></p>
+<h3>Quick note on the data</h3>
+<p>I removed both DC and Oregon from the below graphic. Comparing DC to states, which all have some
+combination of urban areas and non-urban areas, is a bit misleading. DC is completely urban, and
+therefore has a different makeup than states do. More on that later.</p>
+<p>Oregon appeared to have incorrect data. Specifically, the data show that Oregon had 7031 (1.81 per
+1000 people) officers in 2010, 23,006 (5.85 per 1000 people) officers in 2011, and returned back
+to 6492 officers (1.75 per 1000 people) in 2012. The data from 2011 are likely just incorrect.</p>
 <p><img alt="Officers per 1000" src="images/officer_rate_heatmap_state_year.png" title="Number of officers per 1000, by state and year"></p>
 <p>As we would expect, the number of police officers (per 1000 people) has increased pretty significantly
 over time. A few things stuck out to me:</p>
@@ -99,11 +102,6 @@ over time. A few things stuck out to me:</p>
 is largely urban. Other larger states, such as California, may have similar rates of policing in their
 urban areas, but the state-wide rate is diluted by having a large rural population as well. We'll
 come back to this later.</p>
-</li>
-<li>
-<p>What happened to Oregon in 2011? This just looks like bad data; Oregon in 2010 had 7031 officers,
-then 23,006 in 2011, then back down to 6942 in 2012. It seems unlikely that they cut ~16,000 officers
-over one year.</p>
 </li>
 <li>
 <p>What happened to Georgia in the 90s? There's specifically a big increase from 1993 to 1994; I did
@@ -116,7 +114,7 @@ stretch to claim that's the cause without any further evidence.</p>
 <p>What led to the initial jump from 1971 to 1972? And what happened in the 80s? 1982 to 1983 specifically?
 To identify specific years that change happened, it's useful to instead look at a plot of changes
 over police rates over time. That is, a plot showing the increase (or decrease) in number of police
-per 1000 peple from one year to the next. Let's take a look at that (include note about <code>lag</code> et al?)</p>
+per 1000 peple from one year to the next. Let's take a look at that.</p>
 </li>
 </ol>
 <p><img alt="One year change in officers per 1000" src="images/officer_rate_deltas_heatmap_state_year.png" title="Change in Officer Rate"></p>
@@ -146,9 +144,20 @@ can be found <a href="https://www.census.gov/geo/reference/ua/ualists_layout.htm
 Urban and Rural by State", the PctUrbanRural_State.txt data specifically.</p>
 <p>Taking a quick look at this data combined with our original dataset of number of officers per 1000 people, there
 does seem to be a relationship - the more urban a state is, the greater number of police officers. The plot below
-could use some work (the state labels are messy, and I wrestled with <a href="http://ggplot2.tidyverse.org/reference/geom_jitter.html">geom_jitter</a> for a bit before giving up), but shows the general trend.</p>
+could use some work (the state labels are messy), but shows the general trend.</p>
 <p><img alt="% of population police vs. how urban" src="images/urban_pop_vs_officer_rate.png" title="% of population police vs. how urban"></p>
-<p>There are certainly many other factors at play here, but even a simple linear model shows that how urban a state is can significantly predict how policed it is:</p>
+<p>There are certainly many other factors at play here, but even a simple linear model shows that how
+urban a state is can significantly predict how policed it is. See below for full details of that
+model.</p>
+<h2>Conclusion</h2>
+<p>This post only looks at a tiny portion of the data available through the UCR and the Crime Data
+Explorer. I'm hoping to spend more time looking at some of the richer datasets as well; it's great
+to see a push for making these kinds of datasets more easily accessible. Thanks for reading!</p>
+<h3>Code / data</h3>
+<p>All of the code used in this post is available <a href="https://github.com/nrjones8/18f-crime-data">on Github</a> -
+it includes pulling in a few different datasets, calculating the year-over-year changes in officer
+rates, and creating plots.</p>
+<p>The model used to predict officer rates, based on how urban a state is:</p>
 <div class="highlight"><pre><span></span>lm(formula = officer_rate_per_1000 ~ POPPCT_URBAN, data = year_2010)
 
 Residuals:
@@ -159,27 +168,21 @@ Coefficients:
              Estimate Std. Error t value Pr(&gt;|t|)
 (Intercept)  1.478276   0.373703   3.956 0.000251 ***
 POPPCT_URBAN 0.011053   0.004984   2.218 0.031337 *
-</pre></div>
-
-
-<h2>Conclusion</h2>
-<p>This post only looks at a tiny portion of the data available through the UCR and the Crime Data
-Explorer. I'm hoping to spend more time looking at some of the richer datasets as well; it's great
-to see a push for making these kinds of datasets more easily accessible. Thanks for reading!</p></div>
+</pre></div></div>
 	
         <hr>
 
     </div>
         </div>
-        
+
         <div class="span3">
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header"> 
+                <li class="nav-header">
                 Site
                 </li>
-            
+
                 <li><a href="http://nrjones8.me/">Archives</a>
                 <li><a href="http://nrjones8.me/tags.html">Tags</a>
                 <li><a href="http://nrjones8.me/" rel="alternate">Atom feed</a></li>
@@ -189,13 +192,12 @@ to see a push for making these kinds of datasets more easily accessible. Thanks 
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header"> 
+                <li class="nav-header">
                 Categories
                 </li>
-                
+
                 <li><a href="http://nrjones8.me/category/about.html">about</a></li>
                 <li><a href="http://nrjones8.me/category/blog.html">blog</a></li>
-                   
             </ul>
             </div>
 
@@ -203,17 +205,15 @@ to see a push for making these kinds of datasets more easily accessible. Thanks 
 
 
 
-        </div>  
-    </div>     </div> 
+        </div>     </div>     </div> 
 <footer>
 <br />
-<p><a href="http://nrjones8.me">Nick Jones</a> &copy; Nick Jones 2012</p>
+<p><a href="http://nrjones8.me">Nick Jones</a> &copy; Nick Jones 2017</p>
 </footer>
 
 </div> <!-- /container -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-collapse.js"></script>
 <script>var _gaq=[['_setAccount','UA-2818593-7'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
- 
 </body>
 </html>
