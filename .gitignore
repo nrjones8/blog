@@ -3,3 +3,6 @@ terraform/**/.terraform/
 *.terraform.tfstate*
 
 *.pyc
+
+# Don't check the pelican-generated output into git
+output/
