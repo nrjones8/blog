@@ -76,7 +76,7 @@ The heatmap of deltas makes this a bit more clear. There was an increase across 
 to 1972, as well as from 1982 to 1983. These increases line up well with landmarks in the War on Drugs:
 
 #### "Public enemy number one" - Nixon, 1971
-President Richard Nixon gave a speech on June 17, 1971, declaring that drug abuse was "public enemey
+President Richard Nixon gave a speech on June 17, 1971, declaring that drug abuse was "public enemy
 number one." The full text of this speech can be found [here](http://www.presidency.ucsb.edu/ws/?pid=3047).
 As shown above, there was an increase across all states in the following year (comparing 1972 to 1971).
 
