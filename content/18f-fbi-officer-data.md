@@ -26,7 +26,7 @@ having important data like this accessible for people to analyze.
 
 ## Police Employee Data
 I chose to look at one of the simpler datasets; the Police Employee Data, available on the
-Crime Data Explorerer [here](https://crime-data-explorer.fr.cloud.gov/downloads-and-docs).
+Crime Data Explorer [here](https://crime-data-explorer.fr.cloud.gov/downloads-and-docs).
 
 Note that "The Uniform Crime Reporting (UCR) Program defines law enforcement officers as individuals
 who ordinarily carry a firearm and a badge, have full arrest powers, and are paid from governmental
@@ -53,7 +53,7 @@ to 6492 officers (1.75 per 1000 people) in 2012. The data from 2011 are likely j
 As we would expect, the number of police officers (per 1000 people) has increased pretty significantly
 over time. A few things stuck out to me:
 
-1. New Jersey (NJ) has always been very policied. I'd assume this is because it's a small state, but
+1. New Jersey (NJ) has always been very policed. I'd assume this is because it's a small state, but
 is largely urban. Other larger states, such as California, may have similar rates of policing in their
 urban areas, but the state-wide rate is diluted by having a large rural population as well. We'll
 come back to this later.
@@ -67,7 +67,7 @@ stretch to claim that's the cause without any further evidence.
 3. What led to the initial jump from 1971 to 1972? And what happened in the 80s? 1982 to 1983 specifically?
 To identify specific years that change happened, it's useful to instead look at a plot of changes
 over police rates over time. That is, a plot showing the increase (or decrease) in number of police
-per 1000 peple from one year to the next. Let's take a look at that.
+per 1000 people from one year to the next. Let's take a look at that.
 
 
 ![One year change in officers per 1000](images/officer_rate_deltas_heatmap_state_year.png "Change in Officer Rate")
@@ -75,7 +75,7 @@ per 1000 peple from one year to the next. Let's take a look at that.
 The heatmap of deltas makes this a bit more clear. There was an increase across the board from 1971
 to 1972, as well as from 1982 to 1983. These increases line up well with landmarks in the War on Drugs:
 
-#### "Public enemey number one" - Nixon, 1971
+#### "Public enemy number one" - Nixon, 1971
 President Richard Nixon gave a speech on June 17, 1971, declaring that drug abuse was "public enemey
 number one." The full text of this speech can be found [here](http://www.presidency.ucsb.edu/ws/?pid=3047).
 As shown above, there was an increase across all states in the following year (comparing 1972 to 1971).
