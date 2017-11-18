@@ -15,6 +15,9 @@ relevant to them.
 My interests include (a certain kind of) tech, government, social services, the criminal justice
 system, using data to help inform decision-making, and data visualization.
 
-You can find me [@nrjones8 on Twitter](https://twitter.com/nrjones8) and [Github](https://github.com/nrjones8).
-If you want to say hi, feel free to shoot me an email at nrjones8@gmail.com.
+Some posts on this blog will be technical in nature, while others will not. If you'd like to follow
+along with new posts, you can find me [@nrjones8 on Twitter](https://twitter.com/nrjones8) and [Github](https://github.com/nrjones8).
+
+If you want to say hi, ask questions, or provide any feedback, feel free to shoot me an email at
+nrjones8@gmail.com.
 
