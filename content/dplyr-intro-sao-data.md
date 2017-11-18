@@ -1,7 +1,7 @@
 Title: Introduction to dplyr, using SAO data
 Date: 2017-11-18
 Category: blog
-Tags: R
+Tags: R, rbloggers
 Slug: dplyr-intro-sao-data
 Author: Nick Jones
 Summary: A technical introduction to dplyr, using SAO data
