@@ -80,12 +80,6 @@ As we would expect, "Plea of Guilty” is most common. But the more interesting 
 
 If we remove the "FNPC" and "Nolle prosequi" cases, we end up seeing pretty similar plea rates in narcotics vs. non-narcotics cases. In 2016, 85% of narcotics cases ended in a guilty plea, while 82% of non-narcotics cases ended in a guilty plea.
 
-## Dispositions over time - "Smart on Crime"
-Looking at narcotics cases over time (in the 2011 - 2016 time range of the data), there was an increase in total cases from 2011 (16,709 cases) until 2013 (19,790 cases), which then significantly decreased to 12,316 cases in 2016. The below graph shows that general trend, along with the most common dispositions for these cases. This timing lines up well with Attorney General Eric Holder's ["Smart on Crime" initiative](https://www.justice.gov/archives/ag/attorney-generals-smart-crime-initiative), first announced in August of 2013. While the focus of that initiative was on federal prosecutors, my guess is that the general advice was also taken at the state level.
-
-
-![alt text](images/narcotics_by_disposition.png "Narcotics dispositions, over time")
-
 ## Why don't narcotics cases go through felony review or a grand jury?
 I researched this a bit - there is a [2012 research report on "Policies and Procedures of the Illinois Criminal Justice System](http://www.icjia.state.il.us/assets/pdf/ResearchReports/Policies_and_Procedures_of_the_Illinois_Criminal_Justice_System_Aug2012.pdf) but that lacked any reference to direct filings. Cook County's ["Guide to the Criminal Justice System"](https://www.cookcountyil.gov/service/guide-criminal-justice-system) also doesn't mention direct filings.
 
