@@ -29,7 +29,7 @@ As a result, comparing the dispositions of narcotics cases (vs. other types of c
 
 For example, looking at all dispositions in the provided data (2011 - 2016), cases labeled as "Narcotics” led to a guilty plea just 43% of the time, compared to 75% of the time for all other types of cases. That is quite different from what I'd expect to see, since plea bargains are generally quoted to happen in the vast majority of cases. See, e.g. [this report from the Human Rights Watch](https://www.hrw.org/report/2013/12/05/offer-you-cant-refuse/how-us-federal-prosecutors-force-drug-defendants-plead) - it focuses on federal drug cases, but the general trend of pleas holds at the state level as well.
 
-That suggests that we need to take a closer look at the data - there are likely more narcotics cases making to the "disposition” stage than other types of cases. I suspect this is why narcotics cases were left out of the "Disposition” section starting on page 8.
+That suggests that we need to take a closer look at the data - there are likely more narcotics cases making to the "disposition” stage than other types of cases.
 ## Narcotics Dispositions
 Looking at all narcotics data (years 2011 - 2016), the data start to make sense. The table below shows the most common narcotics dispositions, along with the most common dispositions for _non_-narcotics cases.
 
@@ -95,15 +95,16 @@ What I could find simply suggested that direct filing by law enforcement was a c
 
 > State's attorney's offices may allow local agencies to direct file criminal charges with the circuit court clerk. The state's attorney must submit a letter describing the circumstances where local agencies may direct file criminal charges. State's attorneys do not need to submit paper copies of filing decisions for charges that have been determined to be direct filed, however paper submissions are required for other filing decisions. These filing decisions will automatically appear on the subject's criminal history record.
 
+I spoke briefly with the SAO on the phone, and they provided some helpful context. The direct filing of narcotics cases in Cook County has existed for some time for a few reasons:
 
-The Illinois Criminal Justice Information Authority also does audits of "the Criminal History Record Information (CHRI) system to assess the accuracy, timeliness, and completeness of criminal history records, while ensuring compliance with federal guidelines." The 2003 version of this audit (report available [here](http://www.icjia.state.il.us/assets/pdf/bulletins/chriVol2Num7.pdf)) also made reference to direct filing:
+1. Narcotics cases are somewhat simpler than many other types of cases. A police officer arrests someone for possession of a controlled substance, and that person either has that substance or doesn't - an initial Felony Review in such cases wouldn't provide much extra benefit. I do not mean to suggest that narcotics cases as a whole are simple; just that an initial review of a case by the SAO may not provide much added value. An attorney from the SAO can provide more value at a preliminary hearing, with access to more information and context on the case.
 
-> The state's attorney is required to report disposition information indicating if the charges were filed, not filed, and/or if any charge information was added, dismissed, or modified subsequent to the filing of a case. Direct filing is an intentional and systematic exclusion of the state's attorney's office (with prior written approval from the state's attorney's office) in the CHRI form routing process that occurs when arresting agencies file charges directly with the circuit court clerks.
+2. There are a _lot_ of narcotics cases. 8,777 out of a total of the 30,505 total cases considered in 2016 were narcotics cases. Adding an additional 8,777 cases to Felony Review would take a lot of time from SAO attorneys.
 
-One hypothesis is that the FNPC and Nolle prosequi outcomes are essentially the same as an attorney at the SAO rejecting a case at the "Felony review" state. But does that mean that all people charged in narcotics cases have to post bail? Even if those cases go on to be dismissed? As quoted above, the report mentions:
+It should be noted that defendants in narcotics cases _do_ go through a bond hearing. For lower level offenses, most defendants aren't detained pre-trial or forced to post bail - but some are. While the report provided a lot of detail already, it did not provide data at this granularity. If such cases instead went through the Felony Review process, then presumably fewer cases would be initiated - more importantly, those defendants wouldn't have gone through a bond hearing or preliminary hearing.
 
-> The first time the SAO has any involvement in those cases is at preliminary hearing.
+## Conclusion
 
-According to the report and to HG.org's [article on the Illinois Felony Process](https://www.hg.org/article.asp?id=5008), the preliminary hearing happens after a bond hearing. If that's the case, then "direct filing" by law enforcement seems like it would be significantly worse for defendants, who may end up sitting in jail waiting for a case that will eventually be dismissed. If such cases instead went through the Felony Review process, then presumably fewer cases would be initiated - more importantly, those defendants wouldn't have gone through a bond hearing or preliminary hearing.
+I was pleasantly surprised to have the opportunity to talk directly with the SAO to get a better understanding of the direct filing process. Their responsiveness, release of this report, and release of accompanying data is an encouraging sign of transparency, especially from a part of the criminal justice system that generally lacks much detailed data.
 
-If anyone has a better understanding of the "direct filing by law enforcement" process for narcotics cases, or if I'm misinterpreting what the impact of such cases is, please [reach out via Twitter or email](http://nrjones8.me/about.html). Thanks for reading!
+If you have questions, comments, or otherwise want to talk, please [reach out via Twitter or email](http://nrjones8.me/about.html). Thanks for reading!
