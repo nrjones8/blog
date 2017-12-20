@@ -1,10 +1,10 @@
-Title: The odds stacked against defendants (err...)
-Date: 2017-12-10
+Title: The Understaffing of Public Defender's Offices in CA
+Date: 2017-12-16
 Category: blog
 Tags: visualization, R, ggplot, criminal justice
 Slug: california-public-defenders-understaffed
 Author: Nick Jones
-Summary: foo fooo foooooo
+Summary: The understaffing of Public Defender's Office in California
 
 
 > The fundamental right to a lawyer that Americans assume apply to everyone accused of criminal conduct effectively does not exist in practice for countless people across the United States.
@@ -12,75 +12,3380 @@ Summary: foo fooo foooooo
 > [Gideon's Broken Promise: America's Continuing Quest for Equal Justice](https://www.americanbar.org/content/dam/aba/administrative/legal_aid_indigent_defendants/ls_sclaid_def_bp_execsummary.authcheckdam.pdf), American Bar Association, December 2004
 
 
-People are generally aware of the landmark case "Gideon v. Wainwright" from 1963 which granted the right to an attorney - if the accused couldn't afford an attorney, one would be appointed. But people are generally less aware of what that actually means, or the fact that roughly 80% of those accused of felonies cannot afford an attorney [cite this]. I hope to write a longer post some time about how Gideon is actually implemented the short version is:
+People are generally aware of the landmark case "Gideon v. Wainwright" from 1963 which granted the right to an attorney - if the accused can't afford an attorney, a Public Defender ("PD") is appointed. But people are generally less aware of what that actually means, or the fact that roughly 80% of those accused of felonies cannot afford an attorney [1]. I hope to write a longer post some time about how Gideon is actually implemented, but the short version is [2]:
 
-* Implementation varies widely by state - some public defender offices are run by the state, some by each county
-* There are no formal rules for determining who "can't afford" an attorney
-* Many states still require defendants to pay an application fee and / or a "recoupment" fee
-* Public Defenders offices are always overloaded, forcing some to even downright turn away clients for lack of resources (reword).
+* Implementation varies widely by state - some Public Defender offices are run by the state, some by each county.
+* There are no formal rules for determining who "can't afford" an attorney.
+* Many states still require indigent defendants to pay an application fee and / or a "recoupment" fee.
+* Public Defenders offices are always overloaded, forcing some offices to even downright turn away clients.
 
-The "adversarial" system that the American legal system relies upon is not really all that fair - district attorneys have better resources, more people, and complete discretion of what cases they take on, leaving Public Defenders (and their clients) at a <drastic?> disadvantage. [could cite Pfaff on discretion piece]
+So while Gideon guarantees the right to an attorney, the reality is a bit more complicated. The "adversarial" system that the American legal system relies upon is not really all that fair - District Attorneys ("DAs") have better resources, more people, and complete discretion in choosing what cases they take on, leaving Public Defenders (and their clients) at a drastic disadvantage.
 
-In this post, we'll take a look at a simple comparison of resources in California, one of X states that administers indigent defense at the county level.
+In this post, we'll take a look at a simple comparison of resources in California, one of 27 states that administers indigent defense at the county level. The California DOJ has [a number of interesting datasets](https://openjustice.doj.ca.gov/data) available, including county-level data on number of employees in the District Attorney's Office and in the Public Defender's Office. Given that roughly 80% of defendants need a Public Defender, a "fair" (albeit oversimplified) system would staff the Public Defender's Office with 80% of the employees of the District Attorney's Office. Unsurprisingly, this is not the case.
 
- the California DOJ has a number of interesting datasets available, including county-level data on number of employees in the District Attorney's Office and in the Public Defender's Office. Given that roughly 80% of defendants need a public defender, a "fair" (albeit oversimplified) system would staff the Public Defender's Office with 80% of the employees of the District Attorney's Office <further explanation needed?>. Unsurprisingly, this is not the case.
+## A look at California data
+The dataset we'll look at below can be found on the [California DOJ's website here](https://openjustice.doj.ca.gov/data), filed under "Law Enforcement and Criminal Justice Personnel." Tracking 58 counties from 2004 until 2016, there were only 32 counties that actually reported data on their Public Defender's office. This [2007 report on County-based and Local Public Defender
+Offices](https://www.bjs.gov/content/pub/pdf/clpdo07.pdf) notes that some counties don't actually have a Public Defender office, but rather contract cases to private attorneys. My guess is that the remaining 26 counties indeed contract cases out. The README for this dataset gives a vague explanation of why some counts may be zero:
 
-## A look at the data
-While it's great that the DOJ provides this type of data, it is not the cleanest dataset. Tracking 58 counties from 2004 until 2016, there were only 32 counties that actually reported data on their Public Defender's office - it's unclear why the remaining 26 counties don't have this data, though the README for this dataset included a vague explanation:
->  Zero's may indicate that a department or office does not have personnel in that classification, that a department may have closed or merged with another, that a county may not have a police department or a public defender's office, or that data were not reported.
+>  Zero's may indicate that a department or office does not have personnel in that classification, that a department may have closed or merged with another, that a county may not have a police department or a Public Defender's office, or that data were not reported.
 
-Of those that did report data, let's compare the size of the public defender's office with the size of the district attorney's office. The plot below shows that relationship; each point represents one particular county in one particular year (looking at all years and counties we have data for between 2004 and 2016). I've included two other lines: one showing "equal" sizes for the two offices (i.e. if the same number of people were employed by the DA as the PD), and one showing 80% (i.e. if the PD office had 80% the number of employees that the DA office had).
+Of those that did report data, let's compare the size of the Public Defender's office with the size of the District Attorney's office. The plot below shows that relationship; each point represents one particular county in one particular year (looking at all years and counties we have data for between 2004 and 2016). A few things to note:
+
+* The plot excludes LA County, because it is drastically larger than all other counties. Including LA makes the graph near-impossible to read. LA County had a similar ratio as other counties; in 2016, the District Attorney's office had a total of 2040 employees, vs. 1040 employed by the Public Defender (~50% the size of the DA's office).
+* The plot includes a line showing "equal" sizes for the two offices - this represents what would happen if the same number of people were employed by the PD as the DA.
+* The plot includes another line showing the PD office at 80% of the DA office - this represents what would happen if the PD office had 80% the number of employees that the DA office had. I chose 80% because it's estimated that 80% of defendants cannot afford an attorney, as mentioned above.
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+<canvas id="myChart"></canvas>
+
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+
+var prosecutorDefenderData = getData();
+var maxNum = prosecutorDefenderData[0].Prosecution_TOTAL;
+
+// I'm sure there's a much more elegant, Javascript-y way to do this, but I don't know Javascript
+// so this will have to do
+for (var i = 0; i < prosecutorDefenderData.length; i++) {
+    var numProsecutors = prosecutorDefenderData[i].Prosecution_TOTAL;
+    var numPubDefenders = prosecutorDefenderData[i].PublicDefense_TOTAL;
+
+    if (numProsecutors > maxNum) {
+        maxNum = numProsecutors;
+    }
+    if (numPubDefenders > maxNum) {
+        maxNum = numPubDefenders;
+    }
+}
+
+var scatterChart = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+        datasets: [
+            {
+                label: 'County Staffing for PDs and DAs',
+                data: getData(),
+                showLine: false,
+                backgroundColor: "rgb(176,196,222)"
+            },
+            // Draw a line showing what the data _would_ look like if both PDs and DAs had the same
+            // number of employees
+            {
+                label: 'Hypothetical: if PDs had same staffing as DA office',
+                data: [
+                    {"x": 0, y: 0},
+                    {"x": maxNum, y: maxNum}
+                ],
+                showLine: true,
+                fill: false,
+                backgroundColor: "rgba(0,0,0,0.1)"
+            },
+            // Draw a line showing what the data _would_ look like if both PDs and DAs had the same
+            // number of employees
+            {
+                label: 'Hypothetical: if PDs had 80% of DA office',
+                data: [
+                    {"x": 0, y: 0},
+                    {"x": maxNum, y: maxNum * .8}
+                ],
+                showLine: true,
+                fill: false,
+                backgroundColor: "rgba(0,0,0,0.1)"
+            }
+        ],
+    },
+    options: {
+        scales: {
+            xAxes: [{
+                type: 'linear',
+                position: 'bottom',
+                scaleLabel: {
+                    display: true,
+                    labelString: "District Attorney's (DA) Office, # of employees"
+                }
+            }],
+            yAxes: [{
+                scaleLabel: {
+                    display: true,
+                    labelString: "Public Defender's (PD) Office, # of employees"
+                }
+            }],
+        },
+        title: {
+            display: true,
+            text: "Public Defender Staffing vs. District Attorney Staffing, by County, 2004 - 2016"
+        },
+        tooltips: {
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    // lolsob accessing the data point is v confusing
+                    // https://github.com/chartjs/Chart.js/issues/2322 explains some
+                    var datasetIndex = tooltipItem.datasetIndex;
+                    var dataIndex = tooltipItem.index;
+                    var dataPoint = data.datasets[datasetIndex].data[dataIndex];
+
+                    return dataPoint.COUNTY + ", " + dataPoint.YEAR +
+                        " - " + dataPoint.x + " DA, " + dataPoint.y + " PD";
+                }
+            }
+        }
+    }
+});
+
+function getData() {
+    return [
+      {
+        "YEAR": 2004,
+        "COUNTY": "Alameda County",
+        "Prosecution_TOTAL": 349,
+        "PublicDefense_TOTAL": 188,
+        "x": 349,
+        "y": 188
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Contra Costa County",
+        "Prosecution_TOTAL": 192,
+        "PublicDefense_TOTAL": 133,
+        "x": 192,
+        "y": 133
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "El Dorado County",
+        "Prosecution_TOTAL": 50,
+        "PublicDefense_TOTAL": 17,
+        "x": 50,
+        "y": 17
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Fresno County",
+        "Prosecution_TOTAL": 246,
+        "PublicDefense_TOTAL": 99,
+        "x": 246,
+        "y": 99
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Humboldt County",
+        "Prosecution_TOTAL": 56,
+        "PublicDefense_TOTAL": 29,
+        "x": 56,
+        "y": 29
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Imperial County",
+        "Prosecution_TOTAL": 45,
+        "PublicDefense_TOTAL": 14,
+        "x": 45,
+        "y": 14
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Kern County",
+        "Prosecution_TOTAL": 169,
+        "PublicDefense_TOTAL": 81,
+        "x": 169,
+        "y": 81
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Lassen County",
+        "Prosecution_TOTAL": 9,
+        "PublicDefense_TOTAL": 5,
+        "x": 9,
+        "y": 5
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Marin County",
+        "Prosecution_TOTAL": 89,
+        "PublicDefense_TOTAL": 44,
+        "x": 89,
+        "y": 44
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Mendocino County",
+        "Prosecution_TOTAL": 52,
+        "PublicDefense_TOTAL": 21,
+        "x": 52,
+        "y": 21
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Merced County",
+        "Prosecution_TOTAL": 76,
+        "PublicDefense_TOTAL": 15,
+        "x": 76,
+        "y": 15
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Monterey County",
+        "Prosecution_TOTAL": 123,
+        "PublicDefense_TOTAL": 40,
+        "x": 123,
+        "y": 40
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Napa County",
+        "Prosecution_TOTAL": 49,
+        "PublicDefense_TOTAL": 22,
+        "x": 49,
+        "y": 22
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Nevada County",
+        "Prosecution_TOTAL": 25,
+        "PublicDefense_TOTAL": 12,
+        "x": 25,
+        "y": 12
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Orange County",
+        "Prosecution_TOTAL": 641,
+        "PublicDefense_TOTAL": 373,
+        "x": 641,
+        "y": 373
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Riverside County",
+        "Prosecution_TOTAL": 474,
+        "PublicDefense_TOTAL": 169,
+        "x": 474,
+        "y": 169
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Sacramento County",
+        "Prosecution_TOTAL": 427,
+        "PublicDefense_TOTAL": 148,
+        "x": 427,
+        "y": 148
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "San Bernardino County",
+        "Prosecution_TOTAL": 432,
+        "PublicDefense_TOTAL": 169,
+        "x": 432,
+        "y": 169
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "San Diego County",
+        "Prosecution_TOTAL": 893,
+        "PublicDefense_TOTAL": 327,
+        "x": 893,
+        "y": 327
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "San Francisco County",
+        "Prosecution_TOTAL": 250,
+        "PublicDefense_TOTAL": 140,
+        "x": 250,
+        "y": 140
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "San Joaquin County",
+        "Prosecution_TOTAL": 200,
+        "PublicDefense_TOTAL": 86,
+        "x": 200,
+        "y": 86
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Santa Barbara County",
+        "Prosecution_TOTAL": 140,
+        "PublicDefense_TOTAL": 72,
+        "x": 140,
+        "y": 72
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Santa Clara County",
+        "Prosecution_TOTAL": 471,
+        "PublicDefense_TOTAL": 205,
+        "x": 471,
+        "y": 205
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Siskiyou County",
+        "Prosecution_TOTAL": 27,
+        "PublicDefense_TOTAL": 6,
+        "x": 27,
+        "y": 6
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Solano County",
+        "Prosecution_TOTAL": 128,
+        "PublicDefense_TOTAL": 71,
+        "x": 128,
+        "y": 71
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Sonoma County",
+        "Prosecution_TOTAL": 100,
+        "PublicDefense_TOTAL": 47,
+        "x": 100,
+        "y": 47
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Stanislaus County",
+        "Prosecution_TOTAL": 121,
+        "PublicDefense_TOTAL": 39,
+        "x": 121,
+        "y": 39
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Tulare County",
+        "Prosecution_TOTAL": 183,
+        "PublicDefense_TOTAL": 65,
+        "x": 183,
+        "y": 65
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Tuolumne County",
+        "Prosecution_TOTAL": 21,
+        "PublicDefense_TOTAL": 7,
+        "x": 21,
+        "y": 7
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Ventura County",
+        "Prosecution_TOTAL": 244,
+        "PublicDefense_TOTAL": 76,
+        "x": 244,
+        "y": 76
+      },
+      {
+        "YEAR": 2004,
+        "COUNTY": "Yolo County",
+        "Prosecution_TOTAL": 95,
+        "PublicDefense_TOTAL": 32,
+        "x": 95,
+        "y": 32
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Alameda County",
+        "Prosecution_TOTAL": 340,
+        "PublicDefense_TOTAL": 187,
+        "x": 340,
+        "y": 187
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Contra Costa County",
+        "Prosecution_TOTAL": 197,
+        "PublicDefense_TOTAL": 135,
+        "x": 197,
+        "y": 135
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "El Dorado County",
+        "Prosecution_TOTAL": 51,
+        "PublicDefense_TOTAL": 19,
+        "x": 51,
+        "y": 19
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Fresno County",
+        "Prosecution_TOTAL": 257,
+        "PublicDefense_TOTAL": 111,
+        "x": 257,
+        "y": 111
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Humboldt County",
+        "Prosecution_TOTAL": 49,
+        "PublicDefense_TOTAL": 30,
+        "x": 49,
+        "y": 30
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Imperial County",
+        "Prosecution_TOTAL": 47,
+        "PublicDefense_TOTAL": 24,
+        "x": 47,
+        "y": 24
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Kern County",
+        "Prosecution_TOTAL": 160,
+        "PublicDefense_TOTAL": 81,
+        "x": 160,
+        "y": 81
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Lassen County",
+        "Prosecution_TOTAL": 9,
+        "PublicDefense_TOTAL": 5,
+        "x": 9,
+        "y": 5
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Marin County",
+        "Prosecution_TOTAL": 95,
+        "PublicDefense_TOTAL": 46,
+        "x": 95,
+        "y": 46
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Mendocino County",
+        "Prosecution_TOTAL": 52,
+        "PublicDefense_TOTAL": 19,
+        "x": 52,
+        "y": 19
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Merced County",
+        "Prosecution_TOTAL": 73,
+        "PublicDefense_TOTAL": 16,
+        "x": 73,
+        "y": 16
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Monterey County",
+        "Prosecution_TOTAL": 123,
+        "PublicDefense_TOTAL": 44,
+        "x": 123,
+        "y": 44
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Napa County",
+        "Prosecution_TOTAL": 49,
+        "PublicDefense_TOTAL": 22,
+        "x": 49,
+        "y": 22
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Nevada County",
+        "Prosecution_TOTAL": 28,
+        "PublicDefense_TOTAL": 12,
+        "x": 28,
+        "y": 12
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Orange County",
+        "Prosecution_TOTAL": 648,
+        "PublicDefense_TOTAL": 378,
+        "x": 648,
+        "y": 378
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Riverside County",
+        "Prosecution_TOTAL": 496,
+        "PublicDefense_TOTAL": 174,
+        "x": 496,
+        "y": 174
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Sacramento County",
+        "Prosecution_TOTAL": 433,
+        "PublicDefense_TOTAL": 148,
+        "x": 433,
+        "y": 148
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "San Bernardino County",
+        "Prosecution_TOTAL": 453,
+        "PublicDefense_TOTAL": 177,
+        "x": 453,
+        "y": 177
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "San Diego County",
+        "Prosecution_TOTAL": 913,
+        "PublicDefense_TOTAL": 309,
+        "x": 913,
+        "y": 309
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "San Francisco County",
+        "Prosecution_TOTAL": 254,
+        "PublicDefense_TOTAL": 142,
+        "x": 254,
+        "y": 142
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "San Joaquin County",
+        "Prosecution_TOTAL": 204,
+        "PublicDefense_TOTAL": 86,
+        "x": 204,
+        "y": 86
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Santa Barbara County",
+        "Prosecution_TOTAL": 140,
+        "PublicDefense_TOTAL": 72,
+        "x": 140,
+        "y": 72
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Santa Clara County",
+        "Prosecution_TOTAL": 497,
+        "PublicDefense_TOTAL": 206,
+        "x": 497,
+        "y": 206
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Siskiyou County",
+        "Prosecution_TOTAL": 25,
+        "PublicDefense_TOTAL": 4,
+        "x": 25,
+        "y": 4
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Solano County",
+        "Prosecution_TOTAL": 123,
+        "PublicDefense_TOTAL": 82,
+        "x": 123,
+        "y": 82
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Sonoma County",
+        "Prosecution_TOTAL": 104,
+        "PublicDefense_TOTAL": 47,
+        "x": 104,
+        "y": 47
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Stanislaus County",
+        "Prosecution_TOTAL": 135,
+        "PublicDefense_TOTAL": 44,
+        "x": 135,
+        "y": 44
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Tulare County",
+        "Prosecution_TOTAL": 169,
+        "PublicDefense_TOTAL": 69,
+        "x": 169,
+        "y": 69
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Tuolumne County",
+        "Prosecution_TOTAL": 22,
+        "PublicDefense_TOTAL": 7,
+        "x": 22,
+        "y": 7
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Ventura County",
+        "Prosecution_TOTAL": 234,
+        "PublicDefense_TOTAL": 76,
+        "x": 234,
+        "y": 76
+      },
+      {
+        "YEAR": 2005,
+        "COUNTY": "Yolo County",
+        "Prosecution_TOTAL": 95,
+        "PublicDefense_TOTAL": 32,
+        "x": 95,
+        "y": 32
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Alameda County",
+        "Prosecution_TOTAL": 339,
+        "PublicDefense_TOTAL": 179,
+        "x": 339,
+        "y": 179
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Contra Costa County",
+        "Prosecution_TOTAL": 154,
+        "PublicDefense_TOTAL": 135,
+        "x": 154,
+        "y": 135
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "El Dorado County",
+        "Prosecution_TOTAL": 59,
+        "PublicDefense_TOTAL": 30,
+        "x": 59,
+        "y": 30
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Fresno County",
+        "Prosecution_TOTAL": 264,
+        "PublicDefense_TOTAL": 111,
+        "x": 264,
+        "y": 111
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Humboldt County",
+        "Prosecution_TOTAL": 55,
+        "PublicDefense_TOTAL": 30,
+        "x": 55,
+        "y": 30
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Imperial County",
+        "Prosecution_TOTAL": 44,
+        "PublicDefense_TOTAL": 24,
+        "x": 44,
+        "y": 24
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Kern County",
+        "Prosecution_TOTAL": 161,
+        "PublicDefense_TOTAL": 81,
+        "x": 161,
+        "y": 81
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Lassen County",
+        "Prosecution_TOTAL": 12,
+        "PublicDefense_TOTAL": 5,
+        "x": 12,
+        "y": 5
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Marin County",
+        "Prosecution_TOTAL": 92,
+        "PublicDefense_TOTAL": 46,
+        "x": 92,
+        "y": 46
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Mendocino County",
+        "Prosecution_TOTAL": 52,
+        "PublicDefense_TOTAL": 21,
+        "x": 52,
+        "y": 21
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Merced County",
+        "Prosecution_TOTAL": 75,
+        "PublicDefense_TOTAL": 18,
+        "x": 75,
+        "y": 18
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Monterey County",
+        "Prosecution_TOTAL": 124,
+        "PublicDefense_TOTAL": 43,
+        "x": 124,
+        "y": 43
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Napa County",
+        "Prosecution_TOTAL": 45,
+        "PublicDefense_TOTAL": 24,
+        "x": 45,
+        "y": 24
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Nevada County",
+        "Prosecution_TOTAL": 25,
+        "PublicDefense_TOTAL": 13,
+        "x": 25,
+        "y": 13
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Orange County",
+        "Prosecution_TOTAL": 642,
+        "PublicDefense_TOTAL": 387,
+        "x": 642,
+        "y": 387
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Riverside County",
+        "Prosecution_TOTAL": 638,
+        "PublicDefense_TOTAL": 224,
+        "x": 638,
+        "y": 224
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Sacramento County",
+        "Prosecution_TOTAL": 468,
+        "PublicDefense_TOTAL": 156,
+        "x": 468,
+        "y": 156
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "San Bernardino County",
+        "Prosecution_TOTAL": 473,
+        "PublicDefense_TOTAL": 197,
+        "x": 473,
+        "y": 197
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "San Diego County",
+        "Prosecution_TOTAL": 915,
+        "PublicDefense_TOTAL": 324,
+        "x": 915,
+        "y": 324
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "San Francisco County",
+        "Prosecution_TOTAL": 268,
+        "PublicDefense_TOTAL": 148,
+        "x": 268,
+        "y": 148
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "San Joaquin County",
+        "Prosecution_TOTAL": 227,
+        "PublicDefense_TOTAL": 90,
+        "x": 227,
+        "y": 90
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Santa Barbara County",
+        "Prosecution_TOTAL": 142,
+        "PublicDefense_TOTAL": 71,
+        "x": 142,
+        "y": 71
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Santa Clara County",
+        "Prosecution_TOTAL": 494,
+        "PublicDefense_TOTAL": 200,
+        "x": 494,
+        "y": 200
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Siskiyou County",
+        "Prosecution_TOTAL": 28,
+        "PublicDefense_TOTAL": 8,
+        "x": 28,
+        "y": 8
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Solano County",
+        "Prosecution_TOTAL": 124,
+        "PublicDefense_TOTAL": 81,
+        "x": 124,
+        "y": 81
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Sonoma County",
+        "Prosecution_TOTAL": 108,
+        "PublicDefense_TOTAL": 49,
+        "x": 108,
+        "y": 49
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Stanislaus County",
+        "Prosecution_TOTAL": 142,
+        "PublicDefense_TOTAL": 45,
+        "x": 142,
+        "y": 45
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Tulare County",
+        "Prosecution_TOTAL": 181,
+        "PublicDefense_TOTAL": 76,
+        "x": 181,
+        "y": 76
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Tuolumne County",
+        "Prosecution_TOTAL": 22,
+        "PublicDefense_TOTAL": 7,
+        "x": 22,
+        "y": 7
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Ventura County",
+        "Prosecution_TOTAL": 233,
+        "PublicDefense_TOTAL": 78,
+        "x": 233,
+        "y": 78
+      },
+      {
+        "YEAR": 2006,
+        "COUNTY": "Yolo County",
+        "Prosecution_TOTAL": 98,
+        "PublicDefense_TOTAL": 33,
+        "x": 98,
+        "y": 33
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Alameda County",
+        "Prosecution_TOTAL": 335,
+        "PublicDefense_TOTAL": 182,
+        "x": 335,
+        "y": 182
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Contra Costa County",
+        "Prosecution_TOTAL": 169,
+        "PublicDefense_TOTAL": 131,
+        "x": 169,
+        "y": 131
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "El Dorado County",
+        "Prosecution_TOTAL": 73,
+        "PublicDefense_TOTAL": 32,
+        "x": 73,
+        "y": 32
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Fresno County",
+        "Prosecution_TOTAL": 295,
+        "PublicDefense_TOTAL": 125,
+        "x": 295,
+        "y": 125
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Humboldt County",
+        "Prosecution_TOTAL": 54,
+        "PublicDefense_TOTAL": 30,
+        "x": 54,
+        "y": 30
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Imperial County",
+        "Prosecution_TOTAL": 49,
+        "PublicDefense_TOTAL": 24,
+        "x": 49,
+        "y": 24
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Kern County",
+        "Prosecution_TOTAL": 178,
+        "PublicDefense_TOTAL": 89,
+        "x": 178,
+        "y": 89
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Lassen County",
+        "Prosecution_TOTAL": 11,
+        "PublicDefense_TOTAL": 7,
+        "x": 11,
+        "y": 7
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Marin County",
+        "Prosecution_TOTAL": 91,
+        "PublicDefense_TOTAL": 46,
+        "x": 91,
+        "y": 46
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Mendocino County",
+        "Prosecution_TOTAL": 52,
+        "PublicDefense_TOTAL": 27,
+        "x": 52,
+        "y": 27
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Merced County",
+        "Prosecution_TOTAL": 74,
+        "PublicDefense_TOTAL": 18,
+        "x": 74,
+        "y": 18
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Monterey County",
+        "Prosecution_TOTAL": 125,
+        "PublicDefense_TOTAL": 48,
+        "x": 125,
+        "y": 48
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Napa County",
+        "Prosecution_TOTAL": 45,
+        "PublicDefense_TOTAL": 23,
+        "x": 45,
+        "y": 23
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Nevada County",
+        "Prosecution_TOTAL": 26,
+        "PublicDefense_TOTAL": 13,
+        "x": 26,
+        "y": 13
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Orange County",
+        "Prosecution_TOTAL": 724,
+        "PublicDefense_TOTAL": 407,
+        "x": 724,
+        "y": 407
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Riverside County",
+        "Prosecution_TOTAL": 749,
+        "PublicDefense_TOTAL": 249,
+        "x": 749,
+        "y": 249
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Sacramento County",
+        "Prosecution_TOTAL": 481,
+        "PublicDefense_TOTAL": 155,
+        "x": 481,
+        "y": 155
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "San Bernardino County",
+        "Prosecution_TOTAL": 499,
+        "PublicDefense_TOTAL": 214,
+        "x": 499,
+        "y": 214
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "San Diego County",
+        "Prosecution_TOTAL": 967,
+        "PublicDefense_TOTAL": 343,
+        "x": 967,
+        "y": 343
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "San Francisco County",
+        "Prosecution_TOTAL": 272,
+        "PublicDefense_TOTAL": 159,
+        "x": 272,
+        "y": 159
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "San Joaquin County",
+        "Prosecution_TOTAL": 257,
+        "PublicDefense_TOTAL": 95,
+        "x": 257,
+        "y": 95
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Santa Barbara County",
+        "Prosecution_TOTAL": 142,
+        "PublicDefense_TOTAL": 68,
+        "x": 142,
+        "y": 68
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Santa Clara County",
+        "Prosecution_TOTAL": 530,
+        "PublicDefense_TOTAL": 207,
+        "x": 530,
+        "y": 207
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Siskiyou County",
+        "Prosecution_TOTAL": 26,
+        "PublicDefense_TOTAL": 7,
+        "x": 26,
+        "y": 7
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Solano County",
+        "Prosecution_TOTAL": 137,
+        "PublicDefense_TOTAL": 86,
+        "x": 137,
+        "y": 86
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Sonoma County",
+        "Prosecution_TOTAL": 111,
+        "PublicDefense_TOTAL": 51,
+        "x": 111,
+        "y": 51
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Stanislaus County",
+        "Prosecution_TOTAL": 134,
+        "PublicDefense_TOTAL": 50,
+        "x": 134,
+        "y": 50
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Tulare County",
+        "Prosecution_TOTAL": 188,
+        "PublicDefense_TOTAL": 82,
+        "x": 188,
+        "y": 82
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Tuolumne County",
+        "Prosecution_TOTAL": 24,
+        "PublicDefense_TOTAL": 7,
+        "x": 24,
+        "y": 7
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Ventura County",
+        "Prosecution_TOTAL": 236,
+        "PublicDefense_TOTAL": 87,
+        "x": 236,
+        "y": 87
+      },
+      {
+        "YEAR": 2007,
+        "COUNTY": "Yolo County",
+        "Prosecution_TOTAL": 104,
+        "PublicDefense_TOTAL": 35,
+        "x": 104,
+        "y": 35
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Alameda County",
+        "Prosecution_TOTAL": 344,
+        "PublicDefense_TOTAL": 179,
+        "x": 344,
+        "y": 179
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Contra Costa County",
+        "Prosecution_TOTAL": 172,
+        "PublicDefense_TOTAL": 112,
+        "x": 172,
+        "y": 112
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "El Dorado County",
+        "Prosecution_TOTAL": 64,
+        "PublicDefense_TOTAL": 35,
+        "x": 64,
+        "y": 35
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Fresno County",
+        "Prosecution_TOTAL": 286,
+        "PublicDefense_TOTAL": 127,
+        "x": 286,
+        "y": 127
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Humboldt County",
+        "Prosecution_TOTAL": 53,
+        "PublicDefense_TOTAL": 30,
+        "x": 53,
+        "y": 30
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Imperial County",
+        "Prosecution_TOTAL": 55,
+        "PublicDefense_TOTAL": 24,
+        "x": 55,
+        "y": 24
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Kern County",
+        "Prosecution_TOTAL": 198,
+        "PublicDefense_TOTAL": 101,
+        "x": 198,
+        "y": 101
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Lassen County",
+        "Prosecution_TOTAL": 11,
+        "PublicDefense_TOTAL": 6,
+        "x": 11,
+        "y": 6
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Marin County",
+        "Prosecution_TOTAL": 84,
+        "PublicDefense_TOTAL": 48,
+        "x": 84,
+        "y": 48
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Mendocino County",
+        "Prosecution_TOTAL": 51,
+        "PublicDefense_TOTAL": 27,
+        "x": 51,
+        "y": 27
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Merced County",
+        "Prosecution_TOTAL": 82,
+        "PublicDefense_TOTAL": 21,
+        "x": 82,
+        "y": 21
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Monterey County",
+        "Prosecution_TOTAL": 128,
+        "PublicDefense_TOTAL": 48,
+        "x": 128,
+        "y": 48
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Napa County",
+        "Prosecution_TOTAL": 48,
+        "PublicDefense_TOTAL": 23,
+        "x": 48,
+        "y": 23
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Nevada County",
+        "Prosecution_TOTAL": 27,
+        "PublicDefense_TOTAL": 13,
+        "x": 27,
+        "y": 13
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Orange County",
+        "Prosecution_TOTAL": 796,
+        "PublicDefense_TOTAL": 419,
+        "x": 796,
+        "y": 419
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Riverside County",
+        "Prosecution_TOTAL": 805,
+        "PublicDefense_TOTAL": 316,
+        "x": 805,
+        "y": 316
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Sacramento County",
+        "Prosecution_TOTAL": 484,
+        "PublicDefense_TOTAL": 178,
+        "x": 484,
+        "y": 178
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "San Bernardino County",
+        "Prosecution_TOTAL": 551,
+        "PublicDefense_TOTAL": 258,
+        "x": 551,
+        "y": 258
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "San Diego County",
+        "Prosecution_TOTAL": 982,
+        "PublicDefense_TOTAL": 332,
+        "x": 982,
+        "y": 332
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "San Francisco County",
+        "Prosecution_TOTAL": 259,
+        "PublicDefense_TOTAL": 159,
+        "x": 259,
+        "y": 159
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "San Joaquin County",
+        "Prosecution_TOTAL": 233,
+        "PublicDefense_TOTAL": 100,
+        "x": 233,
+        "y": 100
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Santa Barbara County",
+        "Prosecution_TOTAL": 142,
+        "PublicDefense_TOTAL": 70,
+        "x": 142,
+        "y": 70
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Santa Clara County",
+        "Prosecution_TOTAL": 493,
+        "PublicDefense_TOTAL": 202,
+        "x": 493,
+        "y": 202
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Siskiyou County",
+        "Prosecution_TOTAL": 28,
+        "PublicDefense_TOTAL": 8,
+        "x": 28,
+        "y": 8
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Solano County",
+        "Prosecution_TOTAL": 144,
+        "PublicDefense_TOTAL": 84,
+        "x": 144,
+        "y": 84
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Sonoma County",
+        "Prosecution_TOTAL": 130,
+        "PublicDefense_TOTAL": 52,
+        "x": 130,
+        "y": 52
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Stanislaus County",
+        "Prosecution_TOTAL": 136,
+        "PublicDefense_TOTAL": 47,
+        "x": 136,
+        "y": 47
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Tulare County",
+        "Prosecution_TOTAL": 213,
+        "PublicDefense_TOTAL": 83,
+        "x": 213,
+        "y": 83
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Tuolumne County",
+        "Prosecution_TOTAL": 24,
+        "PublicDefense_TOTAL": 7,
+        "x": 24,
+        "y": 7
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Ventura County",
+        "Prosecution_TOTAL": 244,
+        "PublicDefense_TOTAL": 87,
+        "x": 244,
+        "y": 87
+      },
+      {
+        "YEAR": 2008,
+        "COUNTY": "Yolo County",
+        "Prosecution_TOTAL": 102,
+        "PublicDefense_TOTAL": 35,
+        "x": 102,
+        "y": 35
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Contra Costa County",
+        "Prosecution_TOTAL": 156,
+        "PublicDefense_TOTAL": 109,
+        "x": 156,
+        "y": 109
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "El Dorado County",
+        "Prosecution_TOTAL": 69,
+        "PublicDefense_TOTAL": 31,
+        "x": 69,
+        "y": 31
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Fresno County",
+        "Prosecution_TOTAL": 252,
+        "PublicDefense_TOTAL": 104,
+        "x": 252,
+        "y": 104
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Humboldt County",
+        "Prosecution_TOTAL": 55,
+        "PublicDefense_TOTAL": 30,
+        "x": 55,
+        "y": 30
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Imperial County",
+        "Prosecution_TOTAL": 54,
+        "PublicDefense_TOTAL": 24,
+        "x": 54,
+        "y": 24
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Kern County",
+        "Prosecution_TOTAL": 192,
+        "PublicDefense_TOTAL": 92,
+        "x": 192,
+        "y": 92
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Lassen County",
+        "Prosecution_TOTAL": 11,
+        "PublicDefense_TOTAL": 5,
+        "x": 11,
+        "y": 5
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Marin County",
+        "Prosecution_TOTAL": 82,
+        "PublicDefense_TOTAL": 43,
+        "x": 82,
+        "y": 43
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Mendocino County",
+        "Prosecution_TOTAL": 53,
+        "PublicDefense_TOTAL": 26,
+        "x": 53,
+        "y": 26
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Merced County",
+        "Prosecution_TOTAL": 83,
+        "PublicDefense_TOTAL": 21,
+        "x": 83,
+        "y": 21
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Monterey County",
+        "Prosecution_TOTAL": 128,
+        "PublicDefense_TOTAL": 58,
+        "x": 128,
+        "y": 58
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Napa County",
+        "Prosecution_TOTAL": 48,
+        "PublicDefense_TOTAL": 23,
+        "x": 48,
+        "y": 23
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Nevada County",
+        "Prosecution_TOTAL": 23,
+        "PublicDefense_TOTAL": 13,
+        "x": 23,
+        "y": 13
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Orange County",
+        "Prosecution_TOTAL": 717,
+        "PublicDefense_TOTAL": 403,
+        "x": 717,
+        "y": 403
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Riverside County",
+        "Prosecution_TOTAL": 822,
+        "PublicDefense_TOTAL": 327,
+        "x": 822,
+        "y": 327
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Sacramento County",
+        "Prosecution_TOTAL": 437,
+        "PublicDefense_TOTAL": 156,
+        "x": 437,
+        "y": 156
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "San Bernardino County",
+        "Prosecution_TOTAL": 524,
+        "PublicDefense_TOTAL": 260,
+        "x": 524,
+        "y": 260
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "San Diego County",
+        "Prosecution_TOTAL": 995,
+        "PublicDefense_TOTAL": 324,
+        "x": 995,
+        "y": 324
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "San Francisco County",
+        "Prosecution_TOTAL": 252,
+        "PublicDefense_TOTAL": 150,
+        "x": 252,
+        "y": 150
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "San Joaquin County",
+        "Prosecution_TOTAL": 232,
+        "PublicDefense_TOTAL": 97,
+        "x": 232,
+        "y": 97
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Santa Barbara County",
+        "Prosecution_TOTAL": 142,
+        "PublicDefense_TOTAL": 67,
+        "x": 142,
+        "y": 67
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Santa Clara County",
+        "Prosecution_TOTAL": 469,
+        "PublicDefense_TOTAL": 200,
+        "x": 469,
+        "y": 200
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Siskiyou County",
+        "Prosecution_TOTAL": 24,
+        "PublicDefense_TOTAL": 7,
+        "x": 24,
+        "y": 7
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Solano County",
+        "Prosecution_TOTAL": 126,
+        "PublicDefense_TOTAL": 83,
+        "x": 126,
+        "y": 83
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Sonoma County",
+        "Prosecution_TOTAL": 112,
+        "PublicDefense_TOTAL": 54,
+        "x": 112,
+        "y": 54
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Stanislaus County",
+        "Prosecution_TOTAL": 130,
+        "PublicDefense_TOTAL": 45,
+        "x": 130,
+        "y": 45
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Tulare County",
+        "Prosecution_TOTAL": 196,
+        "PublicDefense_TOTAL": 83,
+        "x": 196,
+        "y": 83
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Tuolumne County",
+        "Prosecution_TOTAL": 20,
+        "PublicDefense_TOTAL": 7,
+        "x": 20,
+        "y": 7
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Ventura County",
+        "Prosecution_TOTAL": 245,
+        "PublicDefense_TOTAL": 87,
+        "x": 245,
+        "y": 87
+      },
+      {
+        "YEAR": 2009,
+        "COUNTY": "Yolo County",
+        "Prosecution_TOTAL": 94,
+        "PublicDefense_TOTAL": 33,
+        "x": 94,
+        "y": 33
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Alameda County",
+        "Prosecution_TOTAL": 343,
+        "PublicDefense_TOTAL": 161,
+        "x": 343,
+        "y": 161
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Contra Costa County",
+        "Prosecution_TOTAL": 156,
+        "PublicDefense_TOTAL": 102,
+        "x": 156,
+        "y": 102
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "El Dorado County",
+        "Prosecution_TOTAL": 50,
+        "PublicDefense_TOTAL": 18,
+        "x": 50,
+        "y": 18
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Fresno County",
+        "Prosecution_TOTAL": 216,
+        "PublicDefense_TOTAL": 90,
+        "x": 216,
+        "y": 90
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Humboldt County",
+        "Prosecution_TOTAL": 52,
+        "PublicDefense_TOTAL": 28,
+        "x": 52,
+        "y": 28
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Imperial County",
+        "Prosecution_TOTAL": 59,
+        "PublicDefense_TOTAL": 24,
+        "x": 59,
+        "y": 24
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Kern County",
+        "Prosecution_TOTAL": 186,
+        "PublicDefense_TOTAL": 84,
+        "x": 186,
+        "y": 84
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Lassen County",
+        "Prosecution_TOTAL": 11,
+        "PublicDefense_TOTAL": 5,
+        "x": 11,
+        "y": 5
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Marin County",
+        "Prosecution_TOTAL": 85,
+        "PublicDefense_TOTAL": 40,
+        "x": 85,
+        "y": 40
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Mendocino County",
+        "Prosecution_TOTAL": 52,
+        "PublicDefense_TOTAL": 26,
+        "x": 52,
+        "y": 26
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Merced County",
+        "Prosecution_TOTAL": 78,
+        "PublicDefense_TOTAL": 20,
+        "x": 78,
+        "y": 20
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Monterey County",
+        "Prosecution_TOTAL": 128,
+        "PublicDefense_TOTAL": 55,
+        "x": 128,
+        "y": 55
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Napa County",
+        "Prosecution_TOTAL": 52,
+        "PublicDefense_TOTAL": 21,
+        "x": 52,
+        "y": 21
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Nevada County",
+        "Prosecution_TOTAL": 23,
+        "PublicDefense_TOTAL": 12,
+        "x": 23,
+        "y": 12
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Orange County",
+        "Prosecution_TOTAL": 696,
+        "PublicDefense_TOTAL": 382,
+        "x": 696,
+        "y": 382
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Riverside County",
+        "Prosecution_TOTAL": 786,
+        "PublicDefense_TOTAL": 288,
+        "x": 786,
+        "y": 288
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Sacramento County",
+        "Prosecution_TOTAL": 394,
+        "PublicDefense_TOTAL": 153,
+        "x": 394,
+        "y": 153
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "San Bernardino County",
+        "Prosecution_TOTAL": 503,
+        "PublicDefense_TOTAL": 236,
+        "x": 503,
+        "y": 236
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "San Diego County",
+        "Prosecution_TOTAL": 952,
+        "PublicDefense_TOTAL": 385,
+        "x": 952,
+        "y": 385
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "San Francisco County",
+        "Prosecution_TOTAL": 255,
+        "PublicDefense_TOTAL": 157,
+        "x": 255,
+        "y": 157
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "San Joaquin County",
+        "Prosecution_TOTAL": 214,
+        "PublicDefense_TOTAL": 71,
+        "x": 214,
+        "y": 71
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Santa Barbara County",
+        "Prosecution_TOTAL": 133,
+        "PublicDefense_TOTAL": 68,
+        "x": 133,
+        "y": 68
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Santa Clara County",
+        "Prosecution_TOTAL": 498,
+        "PublicDefense_TOTAL": 225,
+        "x": 498,
+        "y": 225
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Siskiyou County",
+        "Prosecution_TOTAL": 20,
+        "PublicDefense_TOTAL": 7,
+        "x": 20,
+        "y": 7
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Solano County",
+        "Prosecution_TOTAL": 122,
+        "PublicDefense_TOTAL": 74,
+        "x": 122,
+        "y": 74
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Sonoma County",
+        "Prosecution_TOTAL": 107,
+        "PublicDefense_TOTAL": 53,
+        "x": 107,
+        "y": 53
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Stanislaus County",
+        "Prosecution_TOTAL": 120,
+        "PublicDefense_TOTAL": 40,
+        "x": 120,
+        "y": 40
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Tulare County",
+        "Prosecution_TOTAL": 189,
+        "PublicDefense_TOTAL": 72,
+        "x": 189,
+        "y": 72
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Tuolumne County",
+        "Prosecution_TOTAL": 20,
+        "PublicDefense_TOTAL": 7,
+        "x": 20,
+        "y": 7
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Ventura County",
+        "Prosecution_TOTAL": 235,
+        "PublicDefense_TOTAL": 87,
+        "x": 235,
+        "y": 87
+      },
+      {
+        "YEAR": 2010,
+        "COUNTY": "Yolo County",
+        "Prosecution_TOTAL": 89,
+        "PublicDefense_TOTAL": 30,
+        "x": 89,
+        "y": 30
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Alameda County",
+        "Prosecution_TOTAL": 351,
+        "PublicDefense_TOTAL": 161,
+        "x": 351,
+        "y": 161
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Contra Costa County",
+        "Prosecution_TOTAL": 137,
+        "PublicDefense_TOTAL": 94,
+        "x": 137,
+        "y": 94
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "El Dorado County",
+        "Prosecution_TOTAL": 53,
+        "PublicDefense_TOTAL": 19,
+        "x": 53,
+        "y": 19
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Fresno County",
+        "Prosecution_TOTAL": 216,
+        "PublicDefense_TOTAL": 82,
+        "x": 216,
+        "y": 82
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Humboldt County",
+        "Prosecution_TOTAL": 48,
+        "PublicDefense_TOTAL": 25,
+        "x": 48,
+        "y": 25
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Imperial County",
+        "Prosecution_TOTAL": 57,
+        "PublicDefense_TOTAL": 24,
+        "x": 57,
+        "y": 24
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Kern County",
+        "Prosecution_TOTAL": 181,
+        "PublicDefense_TOTAL": 84,
+        "x": 181,
+        "y": 84
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Lassen County",
+        "Prosecution_TOTAL": 11,
+        "PublicDefense_TOTAL": 5,
+        "x": 11,
+        "y": 5
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Marin County",
+        "Prosecution_TOTAL": 86,
+        "PublicDefense_TOTAL": 38,
+        "x": 86,
+        "y": 38
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Mendocino County",
+        "Prosecution_TOTAL": 52,
+        "PublicDefense_TOTAL": 26,
+        "x": 52,
+        "y": 26
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Merced County",
+        "Prosecution_TOTAL": 71,
+        "PublicDefense_TOTAL": 20,
+        "x": 71,
+        "y": 20
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Monterey County",
+        "Prosecution_TOTAL": 125,
+        "PublicDefense_TOTAL": 55,
+        "x": 125,
+        "y": 55
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Napa County",
+        "Prosecution_TOTAL": 53,
+        "PublicDefense_TOTAL": 23,
+        "x": 53,
+        "y": 23
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Nevada County",
+        "Prosecution_TOTAL": 23,
+        "PublicDefense_TOTAL": 12,
+        "x": 23,
+        "y": 12
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Orange County",
+        "Prosecution_TOTAL": 705,
+        "PublicDefense_TOTAL": 368,
+        "x": 705,
+        "y": 368
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Riverside County",
+        "Prosecution_TOTAL": 739,
+        "PublicDefense_TOTAL": 241,
+        "x": 739,
+        "y": 241
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Sacramento County",
+        "Prosecution_TOTAL": 393,
+        "PublicDefense_TOTAL": 135,
+        "x": 393,
+        "y": 135
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "San Bernardino County",
+        "Prosecution_TOTAL": 466,
+        "PublicDefense_TOTAL": 228,
+        "x": 466,
+        "y": 228
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "San Diego County",
+        "Prosecution_TOTAL": 911,
+        "PublicDefense_TOTAL": 336,
+        "x": 911,
+        "y": 336
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "San Francisco County",
+        "Prosecution_TOTAL": 251,
+        "PublicDefense_TOTAL": 152,
+        "x": 251,
+        "y": 152
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "San Joaquin County",
+        "Prosecution_TOTAL": 185,
+        "PublicDefense_TOTAL": 71,
+        "x": 185,
+        "y": 71
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Santa Barbara County",
+        "Prosecution_TOTAL": 133,
+        "PublicDefense_TOTAL": 64,
+        "x": 133,
+        "y": 64
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Santa Clara County",
+        "Prosecution_TOTAL": 489,
+        "PublicDefense_TOTAL": 217,
+        "x": 489,
+        "y": 217
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Siskiyou County",
+        "Prosecution_TOTAL": 13,
+        "PublicDefense_TOTAL": 7,
+        "x": 13,
+        "y": 7
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Solano County",
+        "Prosecution_TOTAL": 102,
+        "PublicDefense_TOTAL": 65,
+        "x": 102,
+        "y": 65
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Sonoma County",
+        "Prosecution_TOTAL": 112,
+        "PublicDefense_TOTAL": 47,
+        "x": 112,
+        "y": 47
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Stanislaus County",
+        "Prosecution_TOTAL": 108,
+        "PublicDefense_TOTAL": 38,
+        "x": 108,
+        "y": 38
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Tulare County",
+        "Prosecution_TOTAL": 180,
+        "PublicDefense_TOTAL": 71,
+        "x": 180,
+        "y": 71
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Tuolumne County",
+        "Prosecution_TOTAL": 19,
+        "PublicDefense_TOTAL": 7,
+        "x": 19,
+        "y": 7
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Ventura County",
+        "Prosecution_TOTAL": 239,
+        "PublicDefense_TOTAL": 87,
+        "x": 239,
+        "y": 87
+      },
+      {
+        "YEAR": 2011,
+        "COUNTY": "Yolo County",
+        "Prosecution_TOTAL": 86,
+        "PublicDefense_TOTAL": 31,
+        "x": 86,
+        "y": 31
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Alameda County",
+        "Prosecution_TOTAL": 341,
+        "PublicDefense_TOTAL": 162,
+        "x": 341,
+        "y": 162
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Contra Costa County",
+        "Prosecution_TOTAL": 125,
+        "PublicDefense_TOTAL": 103,
+        "x": 125,
+        "y": 103
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "El Dorado County",
+        "Prosecution_TOTAL": 56,
+        "PublicDefense_TOTAL": 17,
+        "x": 56,
+        "y": 17
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Fresno County",
+        "Prosecution_TOTAL": 197,
+        "PublicDefense_TOTAL": 87,
+        "x": 197,
+        "y": 87
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Humboldt County",
+        "Prosecution_TOTAL": 47,
+        "PublicDefense_TOTAL": 26,
+        "x": 47,
+        "y": 26
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Imperial County",
+        "Prosecution_TOTAL": 57,
+        "PublicDefense_TOTAL": 24,
+        "x": 57,
+        "y": 24
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Kern County",
+        "Prosecution_TOTAL": 182,
+        "PublicDefense_TOTAL": 83,
+        "x": 182,
+        "y": 83
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Lassen County",
+        "Prosecution_TOTAL": 11,
+        "PublicDefense_TOTAL": 5,
+        "x": 11,
+        "y": 5
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Marin County",
+        "Prosecution_TOTAL": 75,
+        "PublicDefense_TOTAL": 38,
+        "x": 75,
+        "y": 38
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Mendocino County",
+        "Prosecution_TOTAL": 51,
+        "PublicDefense_TOTAL": 24,
+        "x": 51,
+        "y": 24
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Merced County",
+        "Prosecution_TOTAL": 67,
+        "PublicDefense_TOTAL": 15,
+        "x": 67,
+        "y": 15
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Monterey County",
+        "Prosecution_TOTAL": 125,
+        "PublicDefense_TOTAL": 52,
+        "x": 125,
+        "y": 52
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Napa County",
+        "Prosecution_TOTAL": 54,
+        "PublicDefense_TOTAL": 23,
+        "x": 54,
+        "y": 23
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Nevada County",
+        "Prosecution_TOTAL": 24,
+        "PublicDefense_TOTAL": 12,
+        "x": 24,
+        "y": 12
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Orange County",
+        "Prosecution_TOTAL": 743,
+        "PublicDefense_TOTAL": 368,
+        "x": 743,
+        "y": 368
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Riverside County",
+        "Prosecution_TOTAL": 717,
+        "PublicDefense_TOTAL": 234,
+        "x": 717,
+        "y": 234
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Sacramento County",
+        "Prosecution_TOTAL": 390,
+        "PublicDefense_TOTAL": 146,
+        "x": 390,
+        "y": 146
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "San Bernardino County",
+        "Prosecution_TOTAL": 476,
+        "PublicDefense_TOTAL": 210,
+        "x": 476,
+        "y": 210
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "San Diego County",
+        "Prosecution_TOTAL": 887,
+        "PublicDefense_TOTAL": 349,
+        "x": 887,
+        "y": 349
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "San Francisco County",
+        "Prosecution_TOTAL": 254,
+        "PublicDefense_TOTAL": 150,
+        "x": 254,
+        "y": 150
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "San Joaquin County",
+        "Prosecution_TOTAL": 173,
+        "PublicDefense_TOTAL": 64,
+        "x": 173,
+        "y": 64
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Santa Barbara County",
+        "Prosecution_TOTAL": 120,
+        "PublicDefense_TOTAL": 64,
+        "x": 120,
+        "y": 64
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Santa Clara County",
+        "Prosecution_TOTAL": 459,
+        "PublicDefense_TOTAL": 245,
+        "x": 459,
+        "y": 245
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Siskiyou County",
+        "Prosecution_TOTAL": 24,
+        "PublicDefense_TOTAL": 8,
+        "x": 24,
+        "y": 8
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Solano County",
+        "Prosecution_TOTAL": 109,
+        "PublicDefense_TOTAL": 68,
+        "x": 109,
+        "y": 68
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Sonoma County",
+        "Prosecution_TOTAL": 112,
+        "PublicDefense_TOTAL": 48,
+        "x": 112,
+        "y": 48
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Stanislaus County",
+        "Prosecution_TOTAL": 104,
+        "PublicDefense_TOTAL": 35,
+        "x": 104,
+        "y": 35
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Tulare County",
+        "Prosecution_TOTAL": 171,
+        "PublicDefense_TOTAL": 77,
+        "x": 171,
+        "y": 77
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Tuolumne County",
+        "Prosecution_TOTAL": 17,
+        "PublicDefense_TOTAL": 6,
+        "x": 17,
+        "y": 6
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Ventura County",
+        "Prosecution_TOTAL": 241,
+        "PublicDefense_TOTAL": 87,
+        "x": 241,
+        "y": 87
+      },
+      {
+        "YEAR": 2012,
+        "COUNTY": "Yolo County",
+        "Prosecution_TOTAL": 81,
+        "PublicDefense_TOTAL": 31,
+        "x": 81,
+        "y": 31
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Alameda County",
+        "Prosecution_TOTAL": 343,
+        "PublicDefense_TOTAL": 162,
+        "x": 343,
+        "y": 162
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Contra Costa County",
+        "Prosecution_TOTAL": 152,
+        "PublicDefense_TOTAL": 114,
+        "x": 152,
+        "y": 114
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "El Dorado County",
+        "Prosecution_TOTAL": 57,
+        "PublicDefense_TOTAL": 18,
+        "x": 57,
+        "y": 18
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Fresno County",
+        "Prosecution_TOTAL": 216,
+        "PublicDefense_TOTAL": 87,
+        "x": 216,
+        "y": 87
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Humboldt County",
+        "Prosecution_TOTAL": 48,
+        "PublicDefense_TOTAL": 25,
+        "x": 48,
+        "y": 25
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Imperial County",
+        "Prosecution_TOTAL": 63,
+        "PublicDefense_TOTAL": 24,
+        "x": 63,
+        "y": 24
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Kern County",
+        "Prosecution_TOTAL": 183,
+        "PublicDefense_TOTAL": 87,
+        "x": 183,
+        "y": 87
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Lassen County",
+        "Prosecution_TOTAL": 11,
+        "PublicDefense_TOTAL": 5,
+        "x": 11,
+        "y": 5
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Marin County",
+        "Prosecution_TOTAL": 78,
+        "PublicDefense_TOTAL": 37,
+        "x": 78,
+        "y": 37
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Mendocino County",
+        "Prosecution_TOTAL": 51,
+        "PublicDefense_TOTAL": 24,
+        "x": 51,
+        "y": 24
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Merced County",
+        "Prosecution_TOTAL": 67,
+        "PublicDefense_TOTAL": 19,
+        "x": 67,
+        "y": 19
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Monterey County",
+        "Prosecution_TOTAL": 130,
+        "PublicDefense_TOTAL": 55,
+        "x": 130,
+        "y": 55
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Napa County",
+        "Prosecution_TOTAL": 54,
+        "PublicDefense_TOTAL": 22,
+        "x": 54,
+        "y": 22
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Nevada County",
+        "Prosecution_TOTAL": 24,
+        "PublicDefense_TOTAL": 12,
+        "x": 24,
+        "y": 12
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Orange County",
+        "Prosecution_TOTAL": 750,
+        "PublicDefense_TOTAL": 386,
+        "x": 750,
+        "y": 386
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Riverside County",
+        "Prosecution_TOTAL": 698,
+        "PublicDefense_TOTAL": 222,
+        "x": 698,
+        "y": 222
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Sacramento County",
+        "Prosecution_TOTAL": 391,
+        "PublicDefense_TOTAL": 145,
+        "x": 391,
+        "y": 145
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "San Bernardino County",
+        "Prosecution_TOTAL": 463,
+        "PublicDefense_TOTAL": 215,
+        "x": 463,
+        "y": 215
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "San Diego County",
+        "Prosecution_TOTAL": 929,
+        "PublicDefense_TOTAL": 348,
+        "x": 929,
+        "y": 348
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "San Francisco County",
+        "Prosecution_TOTAL": 247,
+        "PublicDefense_TOTAL": 142,
+        "x": 247,
+        "y": 142
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "San Joaquin County",
+        "Prosecution_TOTAL": 165,
+        "PublicDefense_TOTAL": 70,
+        "x": 165,
+        "y": 70
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Santa Barbara County",
+        "Prosecution_TOTAL": 120,
+        "PublicDefense_TOTAL": 62,
+        "x": 120,
+        "y": 62
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Santa Clara County",
+        "Prosecution_TOTAL": 482,
+        "PublicDefense_TOTAL": 238,
+        "x": 482,
+        "y": 238
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Siskiyou County",
+        "Prosecution_TOTAL": 24,
+        "PublicDefense_TOTAL": 8,
+        "x": 24,
+        "y": 8
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Solano County",
+        "Prosecution_TOTAL": 109,
+        "PublicDefense_TOTAL": 72,
+        "x": 109,
+        "y": 72
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Sonoma County",
+        "Prosecution_TOTAL": 114,
+        "PublicDefense_TOTAL": 49,
+        "x": 114,
+        "y": 49
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Stanislaus County",
+        "Prosecution_TOTAL": 112,
+        "PublicDefense_TOTAL": 37,
+        "x": 112,
+        "y": 37
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Tulare County",
+        "Prosecution_TOTAL": 174,
+        "PublicDefense_TOTAL": 81,
+        "x": 174,
+        "y": 81
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Tuolumne County",
+        "Prosecution_TOTAL": 17,
+        "PublicDefense_TOTAL": 6,
+        "x": 17,
+        "y": 6
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Ventura County",
+        "Prosecution_TOTAL": 248,
+        "PublicDefense_TOTAL": 92,
+        "x": 248,
+        "y": 92
+      },
+      {
+        "YEAR": 2013,
+        "COUNTY": "Yolo County",
+        "Prosecution_TOTAL": 86,
+        "PublicDefense_TOTAL": 31,
+        "x": 86,
+        "y": 31
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Alameda County",
+        "Prosecution_TOTAL": 343,
+        "PublicDefense_TOTAL": 163,
+        "x": 343,
+        "y": 163
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Contra Costa County",
+        "Prosecution_TOTAL": 185,
+        "PublicDefense_TOTAL": 119,
+        "x": 185,
+        "y": 119
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "El Dorado County",
+        "Prosecution_TOTAL": 56,
+        "PublicDefense_TOTAL": 24,
+        "x": 56,
+        "y": 24
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Fresno County",
+        "Prosecution_TOTAL": 234,
+        "PublicDefense_TOTAL": 87,
+        "x": 234,
+        "y": 87
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Humboldt County",
+        "Prosecution_TOTAL": 50,
+        "PublicDefense_TOTAL": 25,
+        "x": 50,
+        "y": 25
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Imperial County",
+        "Prosecution_TOTAL": 69,
+        "PublicDefense_TOTAL": 25,
+        "x": 69,
+        "y": 25
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Kern County",
+        "Prosecution_TOTAL": 201,
+        "PublicDefense_TOTAL": 95,
+        "x": 201,
+        "y": 95
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Lassen County",
+        "Prosecution_TOTAL": 11,
+        "PublicDefense_TOTAL": 5,
+        "x": 11,
+        "y": 5
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Marin County",
+        "Prosecution_TOTAL": 83,
+        "PublicDefense_TOTAL": 38,
+        "x": 83,
+        "y": 38
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Mendocino County",
+        "Prosecution_TOTAL": 51,
+        "PublicDefense_TOTAL": 24,
+        "x": 51,
+        "y": 24
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Merced County",
+        "Prosecution_TOTAL": 68,
+        "PublicDefense_TOTAL": 16,
+        "x": 68,
+        "y": 16
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Monterey County",
+        "Prosecution_TOTAL": 142,
+        "PublicDefense_TOTAL": 56,
+        "x": 142,
+        "y": 56
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Napa County",
+        "Prosecution_TOTAL": 54,
+        "PublicDefense_TOTAL": 23,
+        "x": 54,
+        "y": 23
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Nevada County",
+        "Prosecution_TOTAL": 24,
+        "PublicDefense_TOTAL": 12,
+        "x": 24,
+        "y": 12
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Orange County",
+        "Prosecution_TOTAL": 734,
+        "PublicDefense_TOTAL": 383,
+        "x": 734,
+        "y": 383
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Riverside County",
+        "Prosecution_TOTAL": 700,
+        "PublicDefense_TOTAL": 213,
+        "x": 700,
+        "y": 213
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Sacramento County",
+        "Prosecution_TOTAL": 390,
+        "PublicDefense_TOTAL": 143,
+        "x": 390,
+        "y": 143
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "San Bernardino County",
+        "Prosecution_TOTAL": 440,
+        "PublicDefense_TOTAL": 229,
+        "x": 440,
+        "y": 229
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "San Diego County",
+        "Prosecution_TOTAL": 952,
+        "PublicDefense_TOTAL": 357,
+        "x": 952,
+        "y": 357
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "San Francisco County",
+        "Prosecution_TOTAL": 248,
+        "PublicDefense_TOTAL": 148,
+        "x": 248,
+        "y": 148
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "San Joaquin County",
+        "Prosecution_TOTAL": 177,
+        "PublicDefense_TOTAL": 73,
+        "x": 177,
+        "y": 73
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Santa Barbara County",
+        "Prosecution_TOTAL": 123,
+        "PublicDefense_TOTAL": 62,
+        "x": 123,
+        "y": 62
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Santa Clara County",
+        "Prosecution_TOTAL": 507,
+        "PublicDefense_TOTAL": 243,
+        "x": 507,
+        "y": 243
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Siskiyou County",
+        "Prosecution_TOTAL": 24,
+        "PublicDefense_TOTAL": 8,
+        "x": 24,
+        "y": 8
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Solano County",
+        "Prosecution_TOTAL": 115,
+        "PublicDefense_TOTAL": 72,
+        "x": 115,
+        "y": 72
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Sonoma County",
+        "Prosecution_TOTAL": 118,
+        "PublicDefense_TOTAL": 49,
+        "x": 118,
+        "y": 49
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Stanislaus County",
+        "Prosecution_TOTAL": 115,
+        "PublicDefense_TOTAL": 37,
+        "x": 115,
+        "y": 37
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Tulare County",
+        "Prosecution_TOTAL": 191,
+        "PublicDefense_TOTAL": 81,
+        "x": 191,
+        "y": 81
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Tuolumne County",
+        "Prosecution_TOTAL": 18,
+        "PublicDefense_TOTAL": 6,
+        "x": 18,
+        "y": 6
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Ventura County",
+        "Prosecution_TOTAL": 253,
+        "PublicDefense_TOTAL": 94,
+        "x": 253,
+        "y": 94
+      },
+      {
+        "YEAR": 2014,
+        "COUNTY": "Yolo County",
+        "Prosecution_TOTAL": 86,
+        "PublicDefense_TOTAL": 33,
+        "x": 86,
+        "y": 33
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Alameda County",
+        "Prosecution_TOTAL": 343,
+        "PublicDefense_TOTAL": 161,
+        "x": 343,
+        "y": 161
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Contra Costa County",
+        "Prosecution_TOTAL": 170,
+        "PublicDefense_TOTAL": 119,
+        "x": 170,
+        "y": 119
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "El Dorado County",
+        "Prosecution_TOTAL": 54,
+        "PublicDefense_TOTAL": 23,
+        "x": 54,
+        "y": 23
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Fresno County",
+        "Prosecution_TOTAL": 260,
+        "PublicDefense_TOTAL": 94,
+        "x": 260,
+        "y": 94
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Humboldt County",
+        "Prosecution_TOTAL": 51,
+        "PublicDefense_TOTAL": 25,
+        "x": 51,
+        "y": 25
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Imperial County",
+        "Prosecution_TOTAL": 71,
+        "PublicDefense_TOTAL": 26,
+        "x": 71,
+        "y": 26
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Kern County",
+        "Prosecution_TOTAL": 208,
+        "PublicDefense_TOTAL": 92,
+        "x": 208,
+        "y": 92
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Lassen County",
+        "Prosecution_TOTAL": 10,
+        "PublicDefense_TOTAL": 5,
+        "x": 10,
+        "y": 5
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Marin County",
+        "Prosecution_TOTAL": 81,
+        "PublicDefense_TOTAL": 36,
+        "x": 81,
+        "y": 36
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Mendocino County",
+        "Prosecution_TOTAL": 51,
+        "PublicDefense_TOTAL": 27,
+        "x": 51,
+        "y": 27
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Merced County",
+        "Prosecution_TOTAL": 63,
+        "PublicDefense_TOTAL": 17,
+        "x": 63,
+        "y": 17
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Monterey County",
+        "Prosecution_TOTAL": 143,
+        "PublicDefense_TOTAL": 56,
+        "x": 143,
+        "y": 56
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Napa County",
+        "Prosecution_TOTAL": 50,
+        "PublicDefense_TOTAL": 23,
+        "x": 50,
+        "y": 23
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Nevada County",
+        "Prosecution_TOTAL": 26,
+        "PublicDefense_TOTAL": 12,
+        "x": 26,
+        "y": 12
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Orange County",
+        "Prosecution_TOTAL": 776,
+        "PublicDefense_TOTAL": 374,
+        "x": 776,
+        "y": 374
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Riverside County",
+        "Prosecution_TOTAL": 677,
+        "PublicDefense_TOTAL": 221,
+        "x": 677,
+        "y": 221
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Sacramento County",
+        "Prosecution_TOTAL": 406,
+        "PublicDefense_TOTAL": 145,
+        "x": 406,
+        "y": 145
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "San Bernardino County",
+        "Prosecution_TOTAL": 440,
+        "PublicDefense_TOTAL": 214,
+        "x": 440,
+        "y": 214
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "San Diego County",
+        "Prosecution_TOTAL": 957,
+        "PublicDefense_TOTAL": 362,
+        "x": 957,
+        "y": 362
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "San Francisco County",
+        "Prosecution_TOTAL": 270,
+        "PublicDefense_TOTAL": 161,
+        "x": 270,
+        "y": 161
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "San Joaquin County",
+        "Prosecution_TOTAL": 192,
+        "PublicDefense_TOTAL": 79,
+        "x": 192,
+        "y": 79
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Santa Barbara County",
+        "Prosecution_TOTAL": 127,
+        "PublicDefense_TOTAL": 60,
+        "x": 127,
+        "y": 60
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Santa Clara County",
+        "Prosecution_TOTAL": 517,
+        "PublicDefense_TOTAL": 257,
+        "x": 517,
+        "y": 257
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Siskiyou County",
+        "Prosecution_TOTAL": 24,
+        "PublicDefense_TOTAL": 6,
+        "x": 24,
+        "y": 6
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Solano County",
+        "Prosecution_TOTAL": 120,
+        "PublicDefense_TOTAL": 57,
+        "x": 120,
+        "y": 57
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Sonoma County",
+        "Prosecution_TOTAL": 121,
+        "PublicDefense_TOTAL": 49,
+        "x": 121,
+        "y": 49
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Stanislaus County",
+        "Prosecution_TOTAL": 116,
+        "PublicDefense_TOTAL": 40,
+        "x": 116,
+        "y": 40
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Tulare County",
+        "Prosecution_TOTAL": 188,
+        "PublicDefense_TOTAL": 86,
+        "x": 188,
+        "y": 86
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Tuolumne County",
+        "Prosecution_TOTAL": 18,
+        "PublicDefense_TOTAL": 6,
+        "x": 18,
+        "y": 6
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Ventura County",
+        "Prosecution_TOTAL": 252,
+        "PublicDefense_TOTAL": 98,
+        "x": 252,
+        "y": 98
+      },
+      {
+        "YEAR": 2015,
+        "COUNTY": "Yolo County",
+        "Prosecution_TOTAL": 87,
+        "PublicDefense_TOTAL": 35,
+        "x": 87,
+        "y": 35
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Alameda County",
+        "Prosecution_TOTAL": 390,
+        "PublicDefense_TOTAL": 170,
+        "x": 390,
+        "y": 170
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Contra Costa County",
+        "Prosecution_TOTAL": 171,
+        "PublicDefense_TOTAL": 119,
+        "x": 171,
+        "y": 119
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "El Dorado County",
+        "Prosecution_TOTAL": 54,
+        "PublicDefense_TOTAL": 22,
+        "x": 54,
+        "y": 22
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Fresno County",
+        "Prosecution_TOTAL": 239,
+        "PublicDefense_TOTAL": 113,
+        "x": 239,
+        "y": 113
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Humboldt County",
+        "Prosecution_TOTAL": 57,
+        "PublicDefense_TOTAL": 25,
+        "x": 57,
+        "y": 25
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Imperial County",
+        "Prosecution_TOTAL": 70,
+        "PublicDefense_TOTAL": 26,
+        "x": 70,
+        "y": 26
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Kern County",
+        "Prosecution_TOTAL": 214,
+        "PublicDefense_TOTAL": 98,
+        "x": 214,
+        "y": 98
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Lassen County",
+        "Prosecution_TOTAL": 11,
+        "PublicDefense_TOTAL": 5,
+        "x": 11,
+        "y": 5
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Marin County",
+        "Prosecution_TOTAL": 81,
+        "PublicDefense_TOTAL": 36,
+        "x": 81,
+        "y": 36
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Mendocino County",
+        "Prosecution_TOTAL": 51,
+        "PublicDefense_TOTAL": 23,
+        "x": 51,
+        "y": 23
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Merced County",
+        "Prosecution_TOTAL": 65,
+        "PublicDefense_TOTAL": 17,
+        "x": 65,
+        "y": 17
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Monterey County",
+        "Prosecution_TOTAL": 138,
+        "PublicDefense_TOTAL": 56,
+        "x": 138,
+        "y": 56
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Napa County",
+        "Prosecution_TOTAL": 56,
+        "PublicDefense_TOTAL": 23,
+        "x": 56,
+        "y": 23
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Nevada County",
+        "Prosecution_TOTAL": 25,
+        "PublicDefense_TOTAL": 13,
+        "x": 25,
+        "y": 13
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Orange County",
+        "Prosecution_TOTAL": 760,
+        "PublicDefense_TOTAL": 385,
+        "x": 760,
+        "y": 385
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Riverside County",
+        "Prosecution_TOTAL": 698,
+        "PublicDefense_TOTAL": 232,
+        "x": 698,
+        "y": 232
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Sacramento County",
+        "Prosecution_TOTAL": 413,
+        "PublicDefense_TOTAL": 148,
+        "x": 413,
+        "y": 148
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "San Bernardino County",
+        "Prosecution_TOTAL": 440,
+        "PublicDefense_TOTAL": 230,
+        "x": 440,
+        "y": 230
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "San Diego County",
+        "Prosecution_TOTAL": 970,
+        "PublicDefense_TOTAL": 367,
+        "x": 970,
+        "y": 367
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "San Francisco County",
+        "Prosecution_TOTAL": 275,
+        "PublicDefense_TOTAL": 169,
+        "x": 275,
+        "y": 169
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "San Joaquin County",
+        "Prosecution_TOTAL": 230,
+        "PublicDefense_TOTAL": 79,
+        "x": 230,
+        "y": 79
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Santa Barbara County",
+        "Prosecution_TOTAL": 128,
+        "PublicDefense_TOTAL": 60,
+        "x": 128,
+        "y": 60
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Santa Clara County",
+        "Prosecution_TOTAL": 517,
+        "PublicDefense_TOTAL": 257,
+        "x": 517,
+        "y": 257
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Siskiyou County",
+        "Prosecution_TOTAL": 22,
+        "PublicDefense_TOTAL": 8,
+        "x": 22,
+        "y": 8
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Solano County",
+        "Prosecution_TOTAL": 120,
+        "PublicDefense_TOTAL": 57,
+        "x": 120,
+        "y": 57
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Sonoma County",
+        "Prosecution_TOTAL": 125,
+        "PublicDefense_TOTAL": 51,
+        "x": 125,
+        "y": 51
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Stanislaus County",
+        "Prosecution_TOTAL": 121,
+        "PublicDefense_TOTAL": 40,
+        "x": 121,
+        "y": 40
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Tulare County",
+        "Prosecution_TOTAL": 188,
+        "PublicDefense_TOTAL": 87,
+        "x": 188,
+        "y": 87
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Tuolumne County",
+        "Prosecution_TOTAL": 18,
+        "PublicDefense_TOTAL": 6,
+        "x": 18,
+        "y": 6
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Ventura County",
+        "Prosecution_TOTAL": 257,
+        "PublicDefense_TOTAL": 103,
+        "x": 257,
+        "y": 103
+      },
+      {
+        "YEAR": 2016,
+        "COUNTY": "Yolo County",
+        "Prosecution_TOTAL": 104,
+        "PublicDefense_TOTAL": 36,
+        "x": 104,
+        "y": 36
+      }
+    ];
+}
+</script>
 
 
+As is clear from the plot above, Public Defender's offices are consistently understaffed relative to the staffing of a District Attorney's office. In 2016, <b>the median Public Defender's office had 43% the staff that a District Attorney's office had [3]</b>. If we take the "80% rule" above as fact, then Public Defender's offices are handling at least twice as many cases / employee as the District Attorney's office.
 
-<scatterplot here>
+## Is it fair to just compare number of employees?
+These are rather rough estimates - comparing total employees is a very simplistic way of comparing "resources." But if anything, we may be underestimating the Public Defender's disadvantage, since prosecutors also have law enforcement agencies on their "side":
 
+> Moreover, prosecutor budgets understate prosecutors' competitive advantage, since unlike defense attorneys, prosecutors do not have to pay for their investigative services, which are provided directly by the police, sheriffs, and other law enforcement agencies. A study in North Carolina found that accounting for these sorts of services effectively tripled the amount spent on prosecution in that state.
 
+> &mdash; Pfaff, John. Locked In: The True Causes of Mass Incarceration and How to Achieve Real Reform (Kindle Locations 2226-2232). Basic Books. Kindle Edition.
 
-As is clear from the plot above, public defender's offices are consistently understaffed relative to the staffing of a district attorney's office. In 2016, the median public defender's office had 43% the staff that a district attorney's office had [footnote and explain what "median" means here]. If we take the "80% rule" above as fact, then public defender's offices are handling at least 2X as many cases / employee as the district attorney's office. It should be noted that these are rather rough estimates - comparing total employees is a very simplistic way of comparing "resources." In fact, prosecutors' offices and budgets underestimate their "advantage" over public defenders, since prosecutors also have law enforcement agencies on their "side":
+It should be noted that the DA and the PD provide additional services. For example, a District Attorney's office may include a Victim Services Division; a Public Defender's office may include a Re-Entry Unit and a Clean Slate Unit [4]. These are all roles that don't work directly on prosecuting / defending someone accused of crime, but are still incredibly important. For example, [California's Prop 64](https://ballotpedia.org/California_Proposition_64,_Marijuana_Legalization_(2016)) has provided the opportunity to help tens of thousands of people have convictions reclassified or dismissed, but Public Defender offices have not seen any additional funding to assist in that effort. [A recent article from The Marshall Project](https://www.themarshallproject.org/2017/11/27/how-do-you-clear-a-pot-conviction-from-your-record) explains:
 
-"Moreover, prosecutor budgets understate prosecutors' competitive advantage, since unlike defense attorneys, prosecutors do not have to pay for their investigative services, which are provided directly by the police, sheriffs, and other law enforcement agencies. A study in North Carolina found that accounting for these sorts of services effectively tripled the amount spent on prosecution in that state."
-
-Pfaff, John. Locked In: The True Causes of Mass Incarceration�and How to Achieve Real Reform (Kindle Locations 2226-2232). Basic Books. Kindle Edition.
-
-
-## Is this a fair comparison?
-* What additional roles do both offices play?
-* E.g. prosecutors have law enforcement to help with investigations
-* E.g. public defenders are often the ones trying to help people clear their records
-> Alameda County Deputy Public Defender Sue Ra said her office hasn’t received any additional funding for post-conviction relief services, which could help attorneys reach more people and process their petitions faster.“Somebody needs to do this work, and the public defenders are on the ground actually doing it,” Ra said. “It would be nice to get the support to allow us the resources to complete work quickly so that our clients don’t miss out on employment and other opportunities.”
-
-https://www.themarshallproject.org/2017/11/27/how-do-you-clear-a-pot-conviction-from-your-record
-
-## But isn't budget the real question? Maybe they're funded similarly, but the PD is spending differently?
-Lol no.
-
-## Some particularly bad counties
-
-### News articles on Fresno
-foo
-
-### San Luis Obispo County (SLO)
-SLO was missing data on public defenders for 2016 - according to the [SLO county website](http://www.slocounty.ca.gov/Departments/Administrative-Office/Services/Public-Defender-Services-(for-individuals).aspx)
-
-> The County contracts with private attorneys to provide Public Defender services. The County’s primary Public Defender firm is San Luis Obispo Defenders.
-
-The [San Luis Obispo Defenders website](http://www.slodefend.com/about-us/) reports having 37 total staff:
-> Today we have 23 attorneys, 5 investigators, 4 paralegals, one social worker, and a support staff of 4 who handle in excess of over 7,000 cases a year.
-
-In 2016, SLO's had 93 total prosecutors according to DOJ data, leaving the public defender with just 40% of the staff of the district attorney.
-
-### San Mateo
-I think there's is supposed to be particularly good?
-http://www.smcgov.org/private-defender-program
-https://www.smcba.org/wp-content/uploads/2017/12/Annual-Report-FY-2016-2017_FINAL_Digital.pdf
+> Alameda County Deputy Public Defender Sue Ra said her office hasn’t received any additional funding for post-conviction relief services, which could help attorneys reach more people and process their petitions faster."Somebody needs to do this work, and the Public Defenders are on the ground actually doing it," Ra said. "It would be nice to get the support to allow us the resources to complete work quickly so that our clients don’t miss out on employment and other opportunities."
 
 
-## Why does this matter?
-"Prosecutors have a huge carrot to use with defendants who can't make bail: plead guilty now, and the sentence recommendation will be for time already served in jail. A defendant faced with such an offer has to decide if staying in prison and fighting for an acquittal is worth more than just walking home that afternoon. It's a very powerful card for the prosecutor to hold."
+## Is this likely to change?
+Looking over the past 12 years, there doesn't seem to be any particular direction in change. The boxplot below shows the distribution of Public Defender office's size, as a percentage of the District Attorney's office - the median Public Defender's office has been steady around 44%.
+![PD vs DA over time](images/boxplot_pd_vs_da_percentages.png "Size of PD relative to DA")
 
-Pfaff, John. Locked In: The True Causes of Mass Incarceration�and How to Achieve Real Reform (Kindle Locations 4805-4808). Basic Books. Kindle Edition.
+I personally haven't heard much talk of reforming these disparities. One interesting possibility is that Realignment in California will incentivize counties to send fewer people to jail - if a county had more evenly staffed Public Defenders offices, presumably fewer people would be sent to jail. For those not familiar, Realignment was the result of [Brown v Plata](https://en.wikipedia.org/wiki/Brown_v._Plata) - California state prisons were operating at 200% capacity, leading to truly horrifying conditions. While we may be focused on numbers here, it's important to remember the human impact behind such rulings - see [Justice Kennedy's opinion](https://www.law.cornell.edu/supct/html/09-1233.ZO.html) for further description of the inhumane conditions.
 
-No representation? Client has no idea what to do. Only a tiny bit of time? Well, the quickest way to "handle" a case is to get a quick plea.
+Part of Realignment was to shift a portion of people in state prisons to county jails. Why is that relevant to this discussion? When a District Attorney sends someone to prison for a felony, the cost of incarcerating that individual falls on the state. As a result, an overzealous District Attorney who sends a lot of people to state prison does not affect his or her county's budget. After realignment, however, people convicted of certain lower-level felonies are sent to _county_ jails. The cost of incarcerating that individual is now felt by the county. As John Pfaff notes in his section about Realignment (Location 2445 of his book mentioned before), it's not clear yet whether that increased county cost would cause changes in District Attorney's budgets or behavior.
 
+All code and data used in this post can be found [on Github](https://github.com/nrjones8/california-das-vs-pds).
 
+## Notes
+[1] See [this article](https://www.theguardian.com/commentisfree/2015/jun/17/poor-rely-public-defenders-too-overworked) from The Guardian. I'm not 100% sure how recent the 80% number comes from, but I did see a few other places reference [this report](https://www.bjs.gov/content/pub/pdf/dccc.pdf) from the Bureau of Justice, written in 2000. I'd be curious to know how that number has changed over time.
+
+[2] See [this 2013 report](https://www.bjs.gov/content/pub/pdf/saids13.pdf) on indigent defense systems run by the state. Among other things, it notes:
+> Seven states reported that attorneys could reject cases if they exceeded caseload limits.
+
+[3] To clarify - by "median," I mean: if you calculate the size of the PD office relative to the DA office, what's the median of that distribution?
+
+[4] For example, these services all exist in San Francisco - the [SF budget book from 2017](http://sfmayor.org/sites/default/files/CSF_Budget_Book_2017_Final_CMYK_LowRes.pdf) mentions them, along with a few other services.
