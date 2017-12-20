@@ -1,5 +1,5 @@
 Title: The Understaffing of Public Defender's Offices in CA
-Date: 2017-12-16
+Date: 2017-12-19
 Category: blog
 Tags: visualization, R, ggplot, criminal justice
 Slug: california-public-defenders-understaffed
