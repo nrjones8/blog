@@ -4,7 +4,7 @@ Category: blog
 Tags: visualization, R, ggplot
 Slug: 18f-fbi-police-employee-data
 Author: Nick Jones
-Summary: Using data provided by the FBI and 18F to see how police forces have grown
+Summary: Using data provided by the FBI and 18F to see how police forces have grown over time.
 
 ## Intro to data
 

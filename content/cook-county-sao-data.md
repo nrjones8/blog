@@ -4,7 +4,7 @@ Category: blog
 Tags: R, ggplot
 Slug: cook-county-sao-dispositions
 Author: Nick Jones
-Summary: Exploring disposition data provided by Cook County's state attorney's office
+Summary: The Cook County State's Attorney's Office released an interesting dataset on how their prosecutors have handled thousands of cases since 2011. It turns out that narcotics cases are initiated differently from all other types of cases - this article explores how "direct filing" leads to a significant number of narcotics cases being dismissed. What would happen if those defendants weren't charged to begin with?
 
 > We have extensive data on crimes, arrests, and prison populations, but when it comes to prosecutors we have next to nothing...We have no comprehensive data on such basic issues as the number of cases resolved by plea bargaining, the number of cases dismissed by prosecutors or judges, or the demographics of line prosecutors—and how those might interact with the demographics of defendants or defense counsel.
 

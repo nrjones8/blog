@@ -4,7 +4,7 @@ Category: blog
 Tags: R, rbloggers
 Slug: dplyr-intro-sao-data
 Author: Nick Jones
-Summary: A technical introduction to dplyr, using SAO data
+Summary: A technical introduction to the R package [dplyr](http://dplyr.tidyverse.org/), using disposition data provided by the Cook County State's Attorney's Office.
 
 I [recently wrote a
 post](http://nrjones8.me/cook-county-sao-dispositions.html) looking at
