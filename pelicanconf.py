@@ -24,6 +24,7 @@ NEWEST_FIRST_ARCHIVES = True
 
 STATIC_PATHS = ["images", ]
 
+DEFAULT_DATE_FORMAT = '%B %d, %Y'
 
 
 THEME = 'themes/tuxlite_tbs'

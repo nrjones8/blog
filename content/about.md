@@ -13,11 +13,25 @@ native mobile apps, and built tools to help service professionals find customers
 relevant to them.
 
 My interests include (a certain kind of) tech, government, social services, the criminal justice
-system, using data to help inform decision-making, and data visualization.
+system, and how to responsibly use data in decision-making and writing.
 
-Some posts on this blog will be technical in nature, while others will not. If you'd like to follow
-along with new posts, you can find me [@nrjones8 on Twitter](https://twitter.com/nrjones8) and [Github](https://github.com/nrjones8).
 
-If you want to say hi, ask questions, or provide any feedback, feel free to shoot me an email at
-nrjones8@gmail.com.
+## Non-technical writing
+A lot of the writing on this website will be about topics that I'm not an expert in - I may have
+read a few books and done some research, but they aren't my career area of expertise. I hope to use
+this as a place to clarify my own thinking and understanding of such topics. Especially when
+talking about areas that I'm less familiar in, I'll call out my assumptions and cite the material
+that helped form my understanding.
 
+## Contacting me
+
+If you'd like to follow along with new posts, provide feedback on any of my writing, or otherwise
+contact me, you can find me elsewhere - I would love to hear from you!
+
+* [Twitter](https://twitter.com/nrjones8)
+* [Github](https://github.com/nrjones8)
+* nrjones8@gmail.com
+
+## Why "nrjones8"?
+"Nick Jones" is a pretty generic name - turns out that "nickjones@gmail.com" was claimed long before
+I ever tried to get it. The "8" originally came from a childhood idol, [Steven Gerrard](https://en.wikipedia.org/wiki/Steven_Gerrard).

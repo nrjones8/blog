@@ -4,7 +4,7 @@ Category: blog
 Tags: visualization, R, ggplot, criminal justice
 Slug: california-public-defenders-understaffed
 Author: Nick Jones
-Summary: Public Defender's Offices are extremely understaffed - this post looks specifically at California, and compares the size of the District Attorney's Office vs. the size of the Public Defender's Office in California counties. Despite handling ~80% of serious criminal cases, the median Public Defender's Office in California counties has just 43% the number of employees as the District Attorney's Office.
+Summary: Public Defender's Offices are extremely understaffed - this post looks specifically at California, and compares the size of the District Attorney's Office vs. the size of the Public Defender's Office in California counties. Despite handling ~80% of serious criminal cases, the median Public Defender's Office in California counties has just 43% the number of employees of the District Attorney's Office.
 
 
 > The fundamental right to a lawyer that Americans assume apply to everyone accused of criminal conduct effectively does not exist in practice for countless people across the United States.
