@@ -20,7 +20,7 @@ system, and how to responsibly use data in decision-making and writing.
 A lot of the writing on this website will be about topics that I'm not an expert in - I may have
 read a few books and done some research, but they aren't my career area of expertise. I hope to use
 this as a place to clarify my own thinking and understanding of such topics. Especially when
-talking about areas that I'm less familiar in, I'll call out my assumptions and cite the material
+talking about areas that I'm less familiar with, I'll call out my assumptions and cite the material
 that helped form my understanding.
 
 ## Contacting me
