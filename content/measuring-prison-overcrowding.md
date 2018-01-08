@@ -4,7 +4,7 @@ Category: blog
 Tags: R, python, prisons
 Slug: measuring-prison-overcrowding
 Author: Nick Jones
-Summary: How does the state of California measure prison overcrowding? It uses an aggregate of all prisoners and compares it to the combined capacity of its 35 state prisons - the Supreme Court ordered California to decrease its prison population to 137.5% of the system's designed capacity. Yet 15 out of the state's 35 prisons have populations exceeding 137.5%. Is that the correct way to measure overcrowding? This post explores why an aggregated measure like this can be misleading, and suggests a few simple alternatives.
+Summary: How does the state of California measure prison overcrowding? It looks at the total number of people in its prisons and compares it to the combined capacity of its 35 state prisons - the Supreme Court ordered California to decrease its prison population to 137.5% of the system's designed capacity. Yet 15 out of the state's 35 prisons have populations exceeding 137.5%. Is that the correct way to measure overcrowding? This post explores why an aggregated measure like this can be misleading, and suggests a few simple alternatives.
 
 California has long had a prison overcrowding problem - the issue has been the subject of a number of lawsuits since the 1990s. [Coleman v. Schwarzenegger](https://en.wikipedia.org/wiki/Coleman_v._Schwarzenegger) began in 1990, [Plata v. Schwarzenegger](https://en.wikipedia.org/wiki/Plata_v._Schwarzenegger) followed in 2001 (and later consolidated with Coleman in 2007), and [Brown v. Plata](https://www.oyez.org/cases/2010/09-1233) reached the US Supreme Court in 2011. See the "Further Reading" section at the end of this post for more detail on those cases.
 
