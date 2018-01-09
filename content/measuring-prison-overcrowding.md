@@ -13,7 +13,7 @@ The Supreme Court affirmed that overcrowding was the “primary cause” for vio
 There is obviously a lot to unpack about this decision and the reforms put into place since 2011 - but in aggregate, overcrowding has decreased. At the end of December 2017, the [CDCR reported](https://cdcr.ca.gov/Reports_Research/Offender_Information_Services_Branch/Monthly/TPOP1A/TPOP1Ad1712.pdf) that its prisons were now housing 131% of their designed capacity, therefore meeting the number mandated by the court. But it’s worth taking a step back and asking: Is looking at aggregate data (i.e. the total number of people in all California prisons combined vs. the total capacity of all 35 prisons combined) the correct way to measure overcrowding?
 
 ## December 2017 - not “technically” overcrowded
-Based on the ruling discussed above, the basic idea is: there’s an overcrowding in California prisons, and 137.5% of the designed capacity is an upper bound on how much overcrowding is constitutionally permittable. [reference the “why 137.5%” in a footnote]
+Based on the ruling discussed above, the basic idea is: there’s an overcrowding in California prisons, and 137.5% of the designed capacity is an upper bound on how much overcrowding is constitutionally permittable.
 
 The problem is that California state prisons are not one single entity; there are currently 35 different state prisons. If 137.5% is the standard for “overcrowding” that violates the 8th Amendment, then _each of the prisons_ should have less than 137.5% of their designed capacity. That, however, is very much not the case today. As of December 31, 2017, **15 out of 35 (43%) of California state prisons still house over 137.5% of their designed capacities**, according to [the CDCR](https://cdcr.ca.gov/Reports_Research/Offender_Information_Services_Branch/Monthly/TPOP1A/TPOP1Ad1712.pdf). Taken together, these 15 prisons are housing almost half of all people in California state prisons today. The total number of people in the 15 overcrowded prisons is 58,591 out of a total 118,058 state-wide - or 49% of the state prison population. If 49% of the state prison’s population is still living in a prison that exceeds the court’s threshold of 137.5%, then the people in those prisons are still at risk for the same health issues that have long plagued California's overcrowded prisons - that's a problem, even if the aggregate population is 131% of the total capacity of all prisons combined.
 
@@ -69,7 +69,7 @@ All five prisons have fewer than 137% of their designed capacity, so this metric
 
 The problem with this metric is that it classifies each prison as "overcrowded" or not; a decrease in just a few people would cause this metric to change drastically. For example, if Prison E had 138 people (with a designed capacity of 100), it would be considered "overcrowded", and all 138 would count towards this measure. If that number decreased to 136, then the prison would no longer be defined as "overcrowded," and this measure would drop to zero. Ideally, a good measure of overcrowding would change in a smoother fashion.
 
-Looking at how this metric has changed over time in California reveals that, while a lot of progress has been made, almost half of the people in California's state prisons are living in overcrowded conditions.
+The graph below shows this metric used on real data in California. Although it is not a perfect way to measure overcrowding, it does reveal that almost half of the people in California's state prisons are still living in overcrowded conditions.
 
 
 <div>
@@ -91,8 +91,14 @@ All five prisons have fewer than 137% of their designed capacity, so this metric
 
 This is a bit of an improvement over the previous measure, because it decreases continuously as a prison's population decreases.
 
+<div>
+    <a href="https://plot.ly/~nrjones8/9/?share_key=vkb3rmbxZkjqngHVNusq3J" target="_blank" title="overcrowding-pct-exceeding-limit" style="display: block; text-align: center;"><img src="https://plot.ly/~nrjones8/9.png?share_key=vkb3rmbxZkjqngHVNusq3J" alt="overcrowding-pct-exceeding-limit" style="max-width: 100%;width: 600px;"  width="600" onerror="this.onerror=null;this.src='https://plot.ly/404.png';" /></a>
+    <script data-plotly="nrjones8:9" sharekey-plotly="vkb3rmbxZkjqngHVNusq3J" src="https://plot.ly/embed.js" async></script>
+</div>
+
+
 ## Conclusion
-Prison overcrowding in California has gotten better since 2011, but remains problematic. The way that we (or the courts) define "overcrowding" is very important - it's the number that the state of California will optimize for. Using an aggregate measure doesn't account for the distribution of overcrowding, and can leave people in certain prisons in unsafe, unhealthy conditions. With that said, I fear that the courts would be unlikely to consider such alternatives that are slightly harder to understand - as [FiveThiryEight recently noted](https://fivethirtyeight.com/features/the-supreme-court-is-allergic-to-math/), the Supreme Court is generally not open to thinking mathematically. The suggestions given above are just two possibilities - there are certainly others that may do a better job. If reads have other ideas, I would be very interested to hear them!
+Prison overcrowding in California has gotten better since 2011, but remains extremely problematic. The way that we (or the courts) define "overcrowding" is very important - it's the number that the state of California will optimize for. Using an aggregate measure doesn't account for the distribution of overcrowding, and can leave people in certain prisons in unsafe, unhealthy conditions. With that said, I fear that the courts would be unlikely to consider such alternatives that are slightly harder to understand - as [FiveThiryEight recently noted](https://fivethirtyeight.com/features/the-supreme-court-is-allergic-to-math/), the Supreme Court is generally not open to thinking mathematically. The suggestions given above are just two possibilities - there are certainly others that may do a better job. If readers have other ideas, I would be very interested to hear them!
 
 The code used to analyze these data and create the above plots can be found [on Github](https://github.com/nrjones8/cdcr-population-data/blob/master/analysis/measuring_overcrowding.R).
 
@@ -100,7 +106,7 @@ The code used to analyze these data and create the above plots can be found [on 
 Each month, the CDCR provides a snapshot of their prisons' populations - each month is a separate PDF, and they are [archived here](https://www.cdcr.ca.gov/Reports_Research/Offender_Information_Services_Branch/Monthly/Monthly_Tpop1a_Archive.html). I wrote a tool to parse these monthly PDFs and output a CSV, making it much easier to look at population trends over time - the scripts and data are [available on Github](https://github.com/nrjones8/cdcr-population-data).
 
 ### Further reading
-This post was meant to explore specifically how overcrowding is measured, and how that affects people. There is a ton of context on prison overcrowding in California and the reforms taken since the 2011 ruling of Brown v. Plata - they warrant a lot more detail than I've provided here. Here are a few resources for people interested:
+This post was meant to explore specifically how overcrowding is measured, and how that affects people. There is a lot more context on prison overcrowding in California and the reforms taken since the 2011 ruling of Brown v. Plata - they warrant much more detail than I've provided here. Here are a few resources for people interested:
 
 * Jonathan Simon's [_Mass Incarceration on Trial_](https://www.goodreads.com/book/show/13236223-mass-incarceration-on-trial) provides a fantastic and detailed overview of these cases.
 * Some of the faculty at UC Hastings maintain a blog on the state of California criminal justice policy and reform - they provide a ton of detail, written in a readable way (as someone without a law background, I was able to understand a lot of it). You can view [their posts on the topic of prison overcrowding](http://californiacorrectionscrisis.blogspot.com/search/label/prison%20overcrowding) - the blog is mostly maintained by [Hadar Aviram](https://twitter.com/aviramh).
