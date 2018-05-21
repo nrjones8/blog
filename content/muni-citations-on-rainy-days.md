@@ -84,10 +84,10 @@ Data on individual citations was obtained via public records request from the SF
 
 The dataset provided by the SFMTA included one year and one month (from March 2017 through March 2018, so 13 months) of citations - about 50,000 in total. The analysis done here only used exactly one year of that data, or roughly 47,000 citations.
 
-You can find the raw data [SOMEWHERE TO BE LINKED HERE]()
+The raw data provided by the SFMTA is [available here](https://github.com/nrjones8/sf-transit-violation-tickets/blob/master/data/raw/P000340_042418_Transit_Violation_Tickets_March_2017_through_March_2018.xlsx), and the CSV version [available here](https://github.com/nrjones8/sf-transit-violation-tickets/blob/master/data/P000340_042418_Transit_Violation_Tickets_March_2017_through_March_2018.csv).
 
 ### Data from the NOAA
-To see the relationship between weather and citation data, historical weather data was downloaded from the NOAA. The NOAA makes daily summaries by location available for download; the raw data used in this analysis is available [LINK TO IT HERE](). I requested it from the [downtown San Francisco](https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USW00023272/detail) station - click "Add to Cart," then select the date range and specific fields of interest. Despite being referred to as a "cart," it's free.
+To see the relationship between weather and citation data, historical weather data was downloaded from the NOAA. The NOAA makes daily summaries by location available for download; the raw data used in this analysis is available [on Github](https://github.com/nrjones8/sf-transit-violation-tickets/blob/master/data/raw/order_1327523_noaa_2017_01_01_to_2018_04_23.csv). I requested it from the [downtown San Francisco](https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USW00023272/detail) station - click "Add to Cart," then select the date range and specific fields of interest. Despite being referred to as a "cart," it's free.
 
 A day was classified as "rainy" if the `PRCP` field ("precipitation") indicated there was any precipitation that day. In the 362 days analyzed, 53 days had some rain and were therefore classified as "rainy" for the purposes of this analysis.
 
