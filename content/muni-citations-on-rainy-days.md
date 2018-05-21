@@ -8,12 +8,12 @@ Summary: Anyone who rides MUNI regularly has seen fare inspectors checking Clipp
 
 Anybody who rides MUNI regularly has had their Clipper Card checked by a fare inspector - anecdotally, it also seemed to me that my Clipper Card was being checked more often when it rained. Using data obtained from the SFMTA, it appears that rainy days do in fact result in more citations - but determining _why_ that's the case is a more complicated question.
 
-Based on citations issued from March 2017 to March 2018, SFMTA issued an **average of 156 citations on days that it rained, vs. 127 citations on days that it did _not_ rain.** Ridership (and as a result, citations) varies a lot on weekends vs. weekdays; looking just at weekdays, the pattern holds: an average of 171 citations were issued on rainy weekdays, vs. an average of 148 on weekdays that it did not rain. Of the 362 days analyzed, 53 days had rain.
+Based on citations issued from March 2017 to March 2018, SFMTA issued an **average of 156 citations on days when it rained, vs. 127 citations on days when it did _not_ rain.** Ridership, and as a result, citations, varies a lot on weekends vs. weekdays. Looking just at weekdays, the pattern holds: an average of 171 citations were issued on rainy weekdays, vs. an average of 148 on weekdays when it did not rain. Of the 362 days analyzed, 53 days were rainy.
 
-There are a number of other factors that may influence the number of citations given out on any given day - below, we'll see that none of them completely account for the increased rate on rainy days.
+There are a number of other factors that may influence the number of citations given out on any given day - below, we'll see that none of them completely accounts for the increased rate on rainy days.
 
 ## What about the day of the week? Does it rain more on high-ridership days?
-The day of week presumably also impacts how many citations fare inspectors hand out; people generally ride public transit less on weekends, so there are fewer people in total who could possibly be riding without having paid. It's also possible that it _happened_ to rain more on days when people were taking public transit more often - looking at the one year of data, the 53 days of rain were not distributed evenly across all days:
+The day of week presumably also impacts how many citations fare inspectors hand out. People generally ride public transit less on weekends, so there are fewer people in total who could possibly be riding without having paid. It's also possible that it _happened_ to rain more on days when people were taking public transit more often - looking at the one year of data, the 53 days of rain were not distributed evenly across all days:
 
 ![Rain by day of week](images/rain_by_day_of_week.png "Number of days it rained, by day of week")
 
@@ -28,16 +28,16 @@ Another possible explanation for the greater number of citations on rainy days i
 Although there's no San Francisco specific data, existing research seems to suggest that rain actually _decreases_ ridership - a [study of bus ridership](http://scholarcommons.usf.edu/jpt/vol15/iss1/6/) in Pierce County, Washington notes "Rain negatively affected ridership in all four seasons," while a [study of the Chicago Transit system](http://www.transportchicago.org/uploads/5/7/2/0/5720074/ps3_transitinclementweather.pdf) found that "Generally, good weather tends to increase ridership, while bad weather tends to reduce it." As a result, it seems unlikely that the increase in citations on rainy days is due simply to an overall increase in ridership.
 
 ## What about seasonality?
-Another possible explanation is seasonality - if it's more likely to rain during times of the year when people ride MUNI more, then it's possible greater ridership leads to the increase in citations. Could seasonality be a confounding variable, causing more rain, a greater number of riders, and therefore more citations? That doesn't seem to be the case. Using [data on average weekday boardings by month](https://www.sfmta.com/reports/muni-average-weekday-boardings) from MUNI, we can compare the monthly number of citations with overall ridership. The _opposite_ actually appears to be true - the greater ridership in a given month, the fewer citations.
+Another possible explanation is seasonality - if it's more likely to rain during times of the year when people ride MUNI more, then it's possible that greater ridership leads to the increase in citations. Could seasonality be a confounding variable, causing more rain, a greater number of riders, and therefore more citations? That doesn't seem to be the case. Using [data on average weekday boardings by month](https://www.sfmta.com/reports/muni-average-weekday-boardings) from MUNI, we can compare the monthly number of citations with overall ridership. The _opposite_ actually appears to be true - the greater ridership in a given month, the fewer citations.
 
 ![Monthly citations vs. average ridership for that month](images/scatter_citation_vs_ridership.png "Monthly citations vs. average ridership")
 
 ## Who gets citations on rainy days?
-My original thinking behind this data was that people needed to seek shelter when there was bad weather, and often the easiest shelter is public transit. When more people who cannot afford MUNI board without buying a ticket, those same people would be the ones most likely to receive a citation. It's hard to know for sure, but the data that MUNI provided also doesn't seem to support this idea.
+My original thinking behind this dataset was that people needed to seek shelter when there is bad weather, and often the easiest shelter is public transit. When more people who cannot afford MUNI board without buying a ticket, those same people would be the ones most likely to receive a citation. It's hard to know for sure, but the data that MUNI provided also doesn't seem to support this idea.
 
 In addition to providing the time and location of citations, the dataset includes (1) the total amount of the fee that has been paid and (2) the total amount of the fee that is still due. Note that fees are not static; if someone doesn't pay the citation by its due date, [additional fees can be added](https://www.sfmta.com/getting-around/drive-park/citations), meaning a Fare Evasion fee of $125 can increase with every payment date that is missed.
 
-While it's impossible to know the financial situations for each person cited, whether or not someone paid their citation fine is a decent proxy - if a person doesn't pay their fine, that person is more likely to not have the money to do so. If poorer residents are the ones who are ticketed more often on rainy days, then we would expect to see that rainy days have more unpaid citations - but that's not the case, as roughly the same percentage of citations have been paid on rainy days (38%) as days that it did not rain (37%).
+While it's impossible to know the financial situations for each person cited, whether or not someone paid their citation fine is a possible proxy - if a person doesn't pay their fine, that person is more likely to not have the money to do so. If poorer residents are the ones who are ticketed more often on rainy days, then we would expect to see that rainy days have more unpaid citations. This doesn't seem to be the case, as roughly the same percentage of citations has been paid on rainy days (38%) as days when it did not rain (37%).
 
 <table class="table table-striped">
     <thead>
@@ -70,7 +70,7 @@ While it's impossible to know the financial situations for each person cited, wh
 ## Further reading
 The topic of fare inspectors has been covered a few times recently - the [SF Examiner](http://www.sfexaminer.com/exempt-anti-quota-law-muni-fare-inspectors-pressured-issue-tickets/) wrote about quotas and inspectors, while [Hoodline](https://hoodline.com/2017/03/when-it-comes-to-fare-enforcement-muni-s-inspectors-rarely-stray-far-from-hq?utm_source=story&utm_medium=web&utm_campaign=stories) wrote an interesting analysis of _where_ fare inspectors are most likely to hand out citations.
 
-Based on the data and analysis above, it's not entirely clear why rainy days result in more citations. Even though citations were paid at a similar rate on rainy days vs. non-rainy days, it would be interesting to explore in more detail the relationship between weather and who is being fined. If low-income communities are more impacted by fines on rainy days, the data here suggest that they're still able to pay those fines - perhaps with the help of The City of San Francisco's [Financial Justice Project](http://sftreasurer.org/financialjustice), which has been working on helping ensure that fines and fees are not overly harsh on low-income communities.
+Based on the data and analysis above, it's not entirely clear why more citations occur on rainy days. Even though citations were paid at a similar rate on rainy days vs. non-rainy days, it would be interesting to explore in more detail the relationship between weather and who is being fined. If low-income communities are more impacted by fines on rainy days, the data here suggest that they are still able to pay those fines - perhaps with the help of The City of San Francisco's [Financial Justice Project](http://sftreasurer.org/financialjustice), which has been working on helping ensure that fines and fees are not overly harsh on low-income communities.
 
 ### Data from the SFMTA
 Data on individual citations was obtained via public records request from the SFMTA. Each row in this dataset represents a single citation, and includes a number of fields - the ones used here were:
@@ -91,7 +91,7 @@ To see the relationship between weather and citation data, historical weather da
 A day was classified as "rainy" if the `PRCP` field ("precipitation") indicated there was any precipitation that day. In the 362 days analyzed, 53 days had some rain and were therefore classified as "rainy" for the purposes of this analysis.
 
 ### Simple linear model
-The output of a linear regression model is shown below; the number of tickets as a function of (1) Whether it rained or not and (2) The day of the week. As mentioned above, a rainy day was associated with ~18 more tickets than a day without rain.
+The output of a linear regression model is shown below; the number of tickets as a function of (1) whether it rained or not and (2) the day of the week. As mentioned above, a rainy day was associated with ~18 more tickets when compared to the number of citations issued on a day without rain.
 ```
                term estimate std.error statistic   p.value
 1         (Intercept)   87.578     5.925   14.7820 < 0.0001
