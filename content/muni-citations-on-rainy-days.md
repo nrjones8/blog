@@ -8,7 +8,7 @@ Summary: Anyone who rides MUNI regularly has seen fare inspectors checking Clipp
 
 Anybody who rides MUNI regularly has had their Clipper Card checked by a fare inspector - anecdotally, it also seemed to me that my Clipper Card was being checked more often when it rained. Using data obtained from the SFMTA, it appears that rainy days do in fact result in more citations - but determining _why_ that's the case is a more complicated question.
 
-Based on citations issued from March 2017 to March 2018, SFMTA issued an **average of 156 citations on days when it rained, vs. 127 citations on days when it did _not_ rain.** Ridership, and as a result, citations, varies a lot on weekends vs. weekdays. Looking just at weekdays, the pattern holds: an average of 171 citations were issued on rainy weekdays, vs. an average of 148 on weekdays when it did not rain. Of the 362 days analyzed, 53 days were rainy.
+Based on citations issued from March 2017 to March 2018, SFMTA issued an average of 156 citations on days when it rained, vs. 127 citations on days when it did _not_ rain. Ridership, and as a result, citations, varies a lot on weekends vs. weekdays. Looking just at weekdays, the pattern holds: **an average of 171 citations were issued on rainy weekdays, vs. an average of 148 on weekdays when it did not rain.** Of the 362 days analyzed, 53 days were rainy.
 
 There are a number of other factors that may influence the number of citations given out on any given day - below, we'll see that none of them completely accounts for the increased rate on rainy days.
 
@@ -37,7 +37,7 @@ My original thinking behind this dataset was that people needed to seek shelter 
 
 In addition to providing the time and location of citations, the dataset includes (1) the total amount of the fee that has been paid and (2) the total amount of the fee that is still due. Note that fees are not static; if someone doesn't pay the citation by its due date, [additional fees can be added](https://www.sfmta.com/getting-around/drive-park/citations), meaning a Fare Evasion fee of $125 can increase with every payment date that is missed.
 
-While it's impossible to know the financial situations for each person cited, whether or not someone paid their citation fine is a possible proxy - if a person doesn't pay their fine, that person is more likely to not have the money to do so. If poorer residents are the ones who are ticketed more often on rainy days, then we would expect to see that rainy days have more unpaid citations. This doesn't seem to be the case, as roughly the same percentage of citations has been paid on rainy days (38%) as days when it did not rain (37%).
+While it's impossible to know the financial situations for each person cited, whether or not someone paid their citation fine is a possible proxy - if a person doesn't pay their fine, that person is more likely to not have the money to do so. If poorer residents are the ones who are ticketed more often on rainy days, then we would expect to see that rainy days have more unpaid citations. This doesn't seem to be the case - citations given on rainy days have been paid at roughly the same rate (38%) as days when it did not rain (37%).
 
 <table class="table table-striped">
     <thead>
