@@ -72,9 +72,8 @@ The topic of fare inspectors has been covered a few times recently - the [SF Exa
 
 Based on the data and analysis above, it's not entirely clear why rainy days result in more citations. Even though citations were paid at a similar rate on rainy days vs. non-rainy days, it would be interesting to explore in more detail the relationship between weather and who is being fined. If low-income communities are more impacted by fines on rainy days, the data here suggest that they're still able to pay those fines - perhaps with the help of The City of San Francisco's [Financial Justice Project](http://sftreasurer.org/financialjustice), which has been working on helping ensure that fines and fees are not overly harsh on low-income communities.
 
-## Details of the Analysis, Data
 ### Data from the SFMTA
-Data on individual citations was obtained via public records request from the SFMTA. Each row in this dataset represents a single citation, and includes:
+Data on individual citations was obtained via public records request from the SFMTA. Each row in this dataset represents a single citation, and includes a number of fields - the ones used here were:
 
 * The time of the violation
 * The location of the violation
@@ -105,6 +104,3 @@ The output of a linear regression model is shown below; the number of tickets as
 8 char_day_of_weekWed  104.683     8.265   12.6659 < 0.0001
 ```
 
-
-
-3. SF Fines & Fees group thing
