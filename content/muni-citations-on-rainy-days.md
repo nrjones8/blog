@@ -17,7 +17,7 @@ The day of week presumably also impacts how many citations fare inspectors hand 
 
 ![Rain by day of week](images/rain_by_day_of_week.png "Number of days it rained, by day of week")
 
-A simple linear model can account for the day of the week, estimating the number of citations handed out based on (1) the day of week and (2) the weather. When accounting for day of the week, the presence of rain was still associated with an increase of about 18 citations on a given day - see the end of this post for details of the regression model.
+A simple linear model can account for the day of the week, estimating the number of citations handed out based on (1) the day of week and (2) whether it rained or not. When accounting for day of the week, the presence of rain was still associated with an increase of about 18 citations on a given day - see the end of this post for details of the regression model.
 
 ![Citations by day of week, weather](images/boxplot_by_weather_day.png "Citations by day of week, weather")
 
@@ -33,7 +33,7 @@ Another possible explanation is seasonality - if it's more likely to rain during
 ![Monthly citations vs. average ridership for that month](images/scatter_citation_vs_ridership.png "Monthly citations vs. average ridership")
 
 ## Who gets citations on rainy days?
-My original thinking behind this dataset was that people needed to seek shelter when there is bad weather, and often the easiest shelter is public transit. When more people who cannot afford MUNI board without buying a ticket, those same people would be the ones most likely to receive a citation. It's hard to know for sure, but the data that MUNI provided also doesn't seem to support this idea.
+My original thinking behind this dataset was that people needed to seek shelter when there is bad weather, and often the easiest shelter is public transit. When more people who cannot afford MUNI board without buying a ticket, those same people would be the ones most likely to receive a citation. It's hard to know for sure, but the data that MUNI provided also don't seem to support this idea.
 
 In addition to providing the time and location of citations, the dataset includes (1) the total amount of the fee that has been paid and (2) the total amount of the fee that is still due. Note that fees are not static; if someone doesn't pay the citation by its due date, [additional fees can be added](https://www.sfmta.com/getting-around/drive-park/citations), meaning a Fare Evasion fee of $125 can increase with every payment date that is missed.
 
