@@ -104,3 +104,6 @@ The output of a linear regression model is shown below; the number of tickets as
 8 char_day_of_weekWed  104.683     8.265   12.6659 < 0.0001
 ```
 
+### Code used for this post
+All data, analysis code, and graphics can be found [on Github](https://github.com/nrjones8/sf-transit-violation-tickets).
+
