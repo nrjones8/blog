@@ -24,6 +24,10 @@ NEWEST_FIRST_ARCHIVES = True
 
 STATIC_PATHS = ["images", ]
 
+# http://docs.getpelican.com/en/stable/settings.html#url-settings
+PAGE_URL = '{slug}.html'
+PAGE_SAVE_AS = '{slug}.html'
+
 DEFAULT_DATE_FORMAT = '%B %d, %Y'
 
 
