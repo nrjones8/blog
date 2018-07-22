@@ -6,3 +6,6 @@ terraform/**/.terraform/
 
 # Don't check the pelican-generated output into git
 output/
+
+# virtualenv
+blog-env/*
