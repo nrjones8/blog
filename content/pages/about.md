@@ -5,7 +5,7 @@ Slug: about
 Author: Nick Jones
 Summary: Information about this blog
 
-Hello humans! I'm a Software Engineer interested in government, the criminal justice system, data visualization, and how to use data responsibly in decision-making and writing. In the past, I've worked on improving government services at [Nava](https://navapbc.com), and building tools to help local professionals grow their businesses at [Thumbtack](https://www.thumbtack.com).
+Hello humans! I'm a Software Engineer interested in government, the criminal justice system, data visualization, and how to use data responsibly in decision-making and writing. In the past, I've worked on improving government services at [Nava](https://navapbc.com), and built tools to help local professionals grow their businesses at [Thumbtack](https://www.thumbtack.com).
 
 ## Contacting me
 
