@@ -22,7 +22,11 @@ DEFAULT_PAGINATION = False
 DISPLAY_PAGES_ON_MENU = False
 NEWEST_FIRST_ARCHIVES = True
 
-STATIC_PATHS = ["images", ]
+STATIC_PATHS = ["images", "static"]
+EXTRA_PATH_METADATA = {
+    # thanks https://stackoverflow.com/a/44209338
+    'static/google71a1aae577e78d5a.html': {'path': 'google71a1aae577e78d5a.html'}
+}
 
 # http://docs.getpelican.com/en/stable/settings.html#url-settings
 PAGE_URL = '{slug}.html'
