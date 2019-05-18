@@ -9,7 +9,7 @@ sys.path.append(os.curdir)
 # Imports the default values from pelicanconf.py, anything below is overwritten
 from pelicanconf import *
 
-SITEURL = 'http://nrjones8.me'
+SITEURL = 'https://nrjones8.me'
 RELATIVE_URLS = False
 
 DELETE_OUTPUT_DIRECTORY = True
