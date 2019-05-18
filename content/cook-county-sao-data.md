@@ -14,7 +14,7 @@ As John Pfaff notes in his [recent book _Locked In_](https://www.goodreads.com/b
 
 The report is pretty detailed, and provides a lot of helpful context on what the data mean and don't mean. It also provides some great visual explanations of how a case moves through the SAO - from arrest to initiation to pre-trail to a disposition to sentencing. I was particularly curious about dispositions, but noticed that the "Disposition" section excluded an analysis / breakdown of narcotics cases. This post looks into how narcotics cases are treated differently, and why the report may have left those cases out of their disposition analysis.
 
-All data used below came from the [State's Attorney Felony Cases - Disposition Outcomes By Offense Type and Defendant Race](https://datacatalog.cookcountyil.gov/Courts/State-s-Attorney-Felony-Cases-Disposition-Outcomes/cqdb-r84f) dataset, and the code used to calculate numbers and generate graphics can be found [here](https://github.com/nrjones8/cook-county-states-attorney/blob/master/analysis.R). For a more detailed explanation of the code, please see [a second post I wrote on the topic](http://nrjones8.me/dplyr-intro-sao-data.html).
+All data used below came from the [State's Attorney Felony Cases - Disposition Outcomes By Offense Type and Defendant Race](https://datacatalog.cookcountyil.gov/Courts/State-s-Attorney-Felony-Cases-Disposition-Outcomes/cqdb-r84f) dataset, and the code used to calculate numbers and generate graphics can be found [here](https://github.com/nrjones8/cook-county-states-attorney/blob/master/analysis.R). For a more detailed explanation of the code, please see [a second post I wrote on the topic](https://nrjones8.me/dplyr-intro-sao-data.html).
 
 ## How Narcotics Cases are Initiated
 The report notes that narcotics cases are initiated differently from all other cases. Non-narcotics cases go through either (1) Felony review (where attorneys at the SAO decide whether or not to prosecute) or (2) a grand jury. There's a brief explanation (and helpful flowchart) of these differences on page 4 of the report, part of which is reproduced below.
@@ -107,4 +107,4 @@ It should be noted that defendants in narcotics cases _do_ go through a bond hea
 
 I was pleasantly surprised to have the opportunity to talk directly with the SAO to get a better understanding of the direct filing process. Their responsiveness, release of this report, and release of accompanying data is an encouraging sign of transparency, especially from a part of the criminal justice system that generally lacks much detailed data.
 
-If you have questions, comments, or otherwise want to talk, please [reach out via Twitter or email](http://nrjones8.me/about.html). Thanks for reading!
+If you have questions, comments, or otherwise want to talk, please [reach out via Twitter or email](https://nrjones8.me/about.html). Thanks for reading!

@@ -7,7 +7,7 @@ Author: Nick Jones
 Summary: A technical introduction to the R package [dplyr](http://dplyr.tidyverse.org/), using disposition data provided by the Cook County State's Attorney's Office.
 
 I [recently wrote a
-post](http://nrjones8.me/cook-county-sao-dispositions.html) looking at
+post](https://nrjones8.me/cook-county-sao-dispositions.html) looking at
 dispositions coming out of the Cook County State Attorney's Office (SAO)
 - that post analyzed data that [the SAO recently
 released](https://www.cookcountystatesattorney.org/news/cook-county-state-s-attorney-kim-foxx-announces-release-office-s-first-online-data-report)
@@ -362,7 +362,7 @@ The above data show that a large percentage of narcotics cases are being
 dismissed ("FNPC" means "finding of no probable cause" and "Nolle
 Prosecution" simply means that the prosecution decided not to proceed).
 I investigated why that was the case in a little bit more detail in
-[a previous post](http://nrjones8.me/cook-county-sao-dispositions.html), for those curious.
+[a previous post](https://nrjones8.me/cook-county-sao-dispositions.html), for those curious.
 
 Conclusion
 ----------
@@ -376,4 +376,4 @@ understand.
 
 I hope this was a helpful "tutorial" / introduction to `dplyr` -
 suggestions, questions, and other feedback is welcome! Please reach out
-[via email](http://nrjones8.me/about.html) or on [Twitter](https://twitter.com/nrjones8).
+[via email](https://nrjones8.me/about.html) or on [Twitter](https://twitter.com/nrjones8).
