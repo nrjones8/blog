@@ -9,3 +9,4 @@ output/
 
 # virtualenv
 blog-env/*
+deploy_to_aws.sh
