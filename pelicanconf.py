@@ -32,7 +32,8 @@ NEWEST_FIRST_ARCHIVES = True
 STATIC_PATHS = ["images", "static"]
 EXTRA_PATH_METADATA = {
     # thanks https://stackoverflow.com/a/44209338
-    'static/google71a1aae577e78d5a.html': {'path': 'google71a1aae577e78d5a.html'}
+    'static/google71a1aae577e78d5a.html': {'path': 'google71a1aae577e78d5a.html'},
+    'static/about.html': {'path': 'about.html'}
 }
 
 JINJA_ENVIRONMENT = {}
@@ -42,6 +43,14 @@ DISABLE_URL_HASH = True
 # http://docs.getpelican.com/en/stable/settings.html#url-settings
 PAGE_URL = '{slug}.html'
 PAGE_SAVE_AS = '{slug}.html'
+
+# Save the "index" of blog posts to /blog.html, since the index will be the "about" page.
+INDEX_SAVE_AS = 'blog.html'
+
+# Add "link" here to the blog section, since it's no longer the home page
+LINKS = [
+    ('Blog', '/blog.html')
+]
 
 DEFAULT_DATE_FORMAT = '%B %d, %Y'
 
