@@ -12,14 +12,14 @@ Hello humans! I'm a Software Engineer interested in government, media, data visu
 ## Projects
 
 ### Tracking California's prison overcrowding problem
-[Since 2011](https://en.wikipedia.org/wiki/Brown_v._Plata), California has been under a court-mandated reduction of its prison population to 137.5% of its designed capatiy. In order to track progress of _individual_ prisons over time, I built a tool to parse [PDFs published monthly by the CDCR](https://sites.cdcr.ca.gov/research/population-reports/monthly-total-population-report-archive/) and aggregate monthly population data into one easily-analyzable CSV.
+[Since 2011](https://en.wikipedia.org/wiki/Brown_v._Plata), California has been under a court-mandated reduction of its prison population to 137.5% of its designed capacity. In order to track progress of _individual_ prisons over time, I built a tool to parse [PDFs published monthly by the CDCR](https://sites.cdcr.ca.gov/research/population-reports/monthly-total-population-report-archive/) and aggregate monthly population data into one easily-analyzable CSV.
 
 The data and code are [on Github](https://github.com/nrjones8/cdcr-population-data); I also [wrote about](https://nrjones8.me/measuring-prison-overcrowding.html) why the court's definition of "overcrowding" as an average across 35 prisons is extremely problematic, as many individual prisons have continued to house upwards of 160% of their designed capacities. After releasing the data, UC Hastings professor Hadar Aviram wrote a follow-up [blog post](http://californiacorrectionscrisis.blogspot.com/2018/01/are-ca-prisons-really-less-crowded.html) on the topic.
 
 ### Hourly News Homepage Archive
 A project to archive what the front page of various news websites show. Screenshots are taken *every hour* starting January 1, 2019 and continually updated. In addition, I built an explorer UI to browse the screenshots over time. You can access [that tool here](https://nrjones8.github.io/news-archive-explorer/#/), and its code [on Github](https://github.com/nrjones8/news-archive-explorer).
 
-For more infromation about accessing the screenshots directly, and the technical details of the screenshotter, you can find the code and description [on Github](https://github.com/nrjones8/website-screenshotter). In addition to the screenshot browsing app above, the screenshots have been used to inform stories [on Storybench](http://www.storybench.org/fox-news-obsession-with-aoc-crowded-out-2020-candidate-announcements/).
+For more information about accessing the screenshots directly, and the technical details of the screenshotter, you can find the code and description [on Github](https://github.com/nrjones8/website-screenshotter). In addition to the screenshot browsing app above, the screenshots have been used to inform stories [on Storybench](http://www.storybench.org/fox-news-obsession-with-aoc-crowded-out-2020-candidate-announcements/).
 
 ### MUNI fare inspectors on rainy days
 Published [on Storybench](http://www.storybench.org/using-r-to-explore-the-relationship-between-san-francisco-muni-citations-and-the-weather/), an investigation into the relationship between bad weather and the number of citations handed out by MUNI. Using data obtained via records request from MUNI, I found an increased rate of citations on days that it rained vs. those when it didn't.
