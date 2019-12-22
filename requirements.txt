@@ -15,7 +15,7 @@ Pygments==1.6
 python-dateutil==2.6.1
 python-magic==0.4.13
 pytz==2014.2
-PyYAML==3.12
+PyYAML==5.1
 rsa==3.4.2
 s3cmd==2.0.0
 s3transfer==0.1.11
