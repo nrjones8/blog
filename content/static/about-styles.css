@@ -1,0 +1,40 @@
+.projects-grid-container {
+  display: grid;
+  /* grid-template-columns: auto auto auto; */
+  /* thanks to https://css-tricks.com/look-ma-no-media-queries-responsive-layouts-using-css-grid/ */ 
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  padding: 10px;
+  border-color: lightgrey;
+}
+
+.project-grid-item {
+  padding-top: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  border: 1px solid;
+  /* Super hacky, but thanks to https://stackoverflow.com/a/47883004 
+  to avoid getting double-thick borders on items that share a border
+  */
+  margin:0 -1px -1px 0;
+}
+
+.project-title {
+  vertical-align: top;
+  text-align: left;
+  margin-bottom: inherit;
+}
+
+.project-img {
+  border: 1px solid;
+  border-color: lightgrey;
+}
+
+.project-description {
+  font-size: smaller;
+  text-align: left;
+}
+
+.fa-external-link {
+  font-size: initial;
+}
