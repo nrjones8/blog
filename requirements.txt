@@ -11,7 +11,7 @@ Markdown==2.4
 MarkupSafe==0.21
 pelican==3.3
 pyasn1==0.3.6
-Pygments==1.6
+Pygments==2.7.4
 python-dateutil==2.6.1
 python-magic==0.4.13
 pytz==2014.2
